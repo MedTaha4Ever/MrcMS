@@ -10,7 +10,8 @@
     <meta name="author" content="">
 
     <title>SB Admin 2 - Login</title>
-
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('web/favicon32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('web/favicon16.png') }}">
     <!-- Custom fonts for this template-->
     <!-- Custom fonts for this template-->
     <link href="{{ asset('js/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
