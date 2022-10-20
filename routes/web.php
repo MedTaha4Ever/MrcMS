@@ -40,7 +40,8 @@ Route::post('/admin/cars/edit', [CarsController::class, 'edit'])->middleware('au
 Route::get('/admin/cars/delete/{id}', [CarsController::class, 'delete'])->middleware('auth');
 
 // liste des modele sous formes <option>
-Route::get('/admin/cars/models', [ModelsController::class, 'getModels'])->name('Marque.getModels')->middleware('auth');
+Route::get('/getModels', [ModelsController::class, 'getModels'])->name('Marque.getModels')->middleware('auth');
+Route::get('/getActualModels', [ModelsController::class, 'getActualModels'])->name('Marque.getActualModels')->middleware('auth');
 
 
 //Clients

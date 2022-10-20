@@ -341,7 +341,7 @@
 
 
                 <!-- Footer -->
-                <footer class="sticky-footer bg-white">
+                <footer class="fixed-bottom bg-white">
                     <div class="container my-auto">
                         <div class="copyright text-center my-auto">
                             <span>Copyright &copy; MRC Managment System {{ date('Y') }}</span>

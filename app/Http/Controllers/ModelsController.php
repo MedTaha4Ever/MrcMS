@@ -18,4 +18,15 @@ class ModelsController extends Controller
         }
         return $html;
     }
+
+    public function getActualModels(Request $request)
+    {
+        # code...
+        $models = DB::table('models')->where('id', $request->model_id)->get();
+        $html = '';
+        foreach ($models as $model) {
+            $html .= '<option value="' . $model->id . '">' . $model->name . '</option>';
+        }
+        return $html;
+    }
 }

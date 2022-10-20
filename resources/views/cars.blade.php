@@ -26,12 +26,11 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($cars as $car)
-                                            <tr
-                                                data-child-value="{{ $diff =
+                                            <tr data-child-value="<div><ul><li><b>Age</b>:  {{ $diff =
                                                     Carbon\Carbon::parse($car->date_cir)->diffInYears(Carbon\Carbon::now()) .
                                                     ' ans </li><li><b>D.P.C</b>: ' .
                                                     date('d M Y', strtotime($car->date_cir)) .
-                                                    '</li></ul>' }}">
+                                                    '</li></ul>' }}</div>">
                                                 <td class="details-control"></td>
                                                 <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Circle-icons-car.svg/1200px-Circle-icons-car.svg.png"
                                                         width="32" height="32" class="rounded-circle my-n1"
@@ -86,10 +85,6 @@
     @stop
     @section('scripts')
         <script defer>
-            function format(value) {
-                return '<div><ul><li><b>Age</b>: ' + value + '</div>';
-            }
-
             $(document).ready(function() {
                 let table = $('#c_table').DataTable({
                     language: {
@@ -108,33 +103,33 @@
                         tr.removeClass('shown');
                     } else {
                         // Open this row
-                        row.child(format(tr.data('child-value'))).show();
+                        row.child(tr.data('child-value')).show();
                         tr.addClass('shown');
                     }
                 });
             });
-
+            //modal delete button append id
             $('.delete').click(function() {
                 let id = $(this).val();
                 $('.delete_id').attr('href', `{{ url('admin/cars/delete/') }}/` + id);
             })
-
-            function search() {
-                let input, filter, cards, cardContainer, h5, title, i;
-                input = document.getElementById("myFilter");
-                filter = input.value.toUpperCase();
-                cardContainer = document.getElementById("CarCards");
-                cards = cardContainer.getElementsByClassName("card");
-                cardC = cardContainer.getElementsByClassName("containerX");;
-                for (i = 0; i < cards.length; i++) {
-                    title = cards[i].querySelector(".card-body");
-                    if (title.innerText.toUpperCase().indexOf(filter) > -1) {
-                        cardC[i].style.display = "";
-                    } else {
-                        cardC[i].style.display = "none";
-                    }
-                }
-            }
+            //cards searsh
+            // function search() {
+            //     let input, filter, cards, cardContainer, h5, title, i;
+            //     input = document.getElementById("myFilter");
+            //     filter = input.value.toUpperCase();
+            //     cardContainer = document.getElementById("CarCards");
+            //     cards = cardContainer.getElementsByClassName("card");
+            //     cardC = cardContainer.getElementsByClassName("containerX");;
+            //     for (i = 0; i < cards.length; i++) {
+            //         title = cards[i].querySelector(".card-body");
+            //         if (title.innerText.toUpperCase().indexOf(filter) > -1) {
+            //             cardC[i].style.display = "";
+            //         } else {
+            //             cardC[i].style.display = "none";
+            //         }
+            //     }
+            // }
         </script>
     @stop
     @section('css')

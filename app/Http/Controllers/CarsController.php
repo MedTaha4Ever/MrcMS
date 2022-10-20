@@ -41,7 +41,9 @@ class CarsController extends Controller
     public function editform($id)
     {
         $cars = DB::table('cars')
-            ->where('id', "=", $id)
+            ->where('cars.id', "=", $id)
+            ->join('models', 'cars.model', '=', 'models.id')
+            ->select('cars.*', 'models.id as model_id', 'models.name as modName', 'models.marque_id as marque_id', 'models.year')
             ->get();
 
         $marques = DB::table('marques')->get();
