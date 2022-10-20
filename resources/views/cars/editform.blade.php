@@ -60,6 +60,7 @@
                             required><br><br>
 
                         <button type="submit" class="btn btn-primary">Modifier</button>
+                        <a type="button" href="{{ url()->previous() }}" class="btn btn-secondary">Retour</a>
                     </form>
                 </div>
             </div>

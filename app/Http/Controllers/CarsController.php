@@ -13,8 +13,7 @@ class CarsController extends Controller
     {
         $cars = DB::table('cars')
             ->join('models', 'cars.model', '=', 'models.id')
-            ->join('marques', 'cars.marque', '=', 'marques.id')
-            ->select('cars.*', 'marques.name as marqName', 'models.name as modName', 'models.year')
+            ->select('cars.*', 'models.name as modName', 'models.year')
             ->get();
         // dump($cars);
         return view('cars', ['cars' => $cars]);

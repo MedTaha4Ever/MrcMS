@@ -37,7 +37,7 @@
                                                         width="32" height="32" class="rounded-circle my-n1"
                                                         alt="Avatar"></td>
                                                 <td>{{ $car->mat }}</td>
-                                                <td>{{ $car->marqName . ' ' . $car->modName }}</td>
+                                                <td>{{ $car->modName }}</td>
                                                 <td>{{ $car->km }} Km</td>
                                                 @if ($car->contract_id > 0)
                                                     <td><span class="badge bg-danger">{{ $car->contract_id }}</span></td>
