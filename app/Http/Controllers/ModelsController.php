@@ -22,7 +22,7 @@ class ModelsController extends Controller
 
     public function getActualModels(Request $request)
     {
-        # code...
+        # code..
         $models = Modele::where('id', $request->model_id)->get();
         $html = '';
         foreach ($models as $model) {
