@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fe0c06bc8eb7ef51e6dac39c30d85c12",
+    "content-hash": "80cf2fa00ef010a9ad56d46ebef94920",
     "packages": [
         {
             "name": "brick/math",
@@ -6069,80 +6069,6 @@
                 "source": "https://github.com/Jean85/pretty-package-versions/tree/2.0.5"
             },
             "time": "2021-10-08T21:21:46+00:00"
-        },
-        {
-            "name": "krlove/code-generator",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/krlove/code-generator.git",
-                "reference": "1ac521f5ef79a376282e3315ba6a13a83c63fb9a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/krlove/code-generator/zipball/1ac521f5ef79a376282e3315ba6a13a83c63fb9a",
-                "reference": "1ac521f5ef79a376282e3315ba6a13a83c63fb9a",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Krlove\\CodeGenerator\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Code Generator",
-            "support": {
-                "issues": "https://github.com/krlove/code-generator/issues",
-                "source": "https://github.com/krlove/code-generator/tree/1.0.1"
-            },
-            "time": "2022-02-20T12:24:22+00:00"
-        },
-        {
-            "name": "krlove/eloquent-model-generator",
-            "version": "2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/krlove/eloquent-model-generator.git",
-                "reference": "f55921aa6ca2baf515169808584e9ca3367f46f2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/krlove/eloquent-model-generator/zipball/f55921aa6ca2baf515169808584e9ca3367f46f2",
-                "reference": "f55921aa6ca2baf515169808584e9ca3367f46f2",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/dbal": "^3.0",
-                "illuminate/config": "^9.0",
-                "illuminate/console": "^9.0",
-                "illuminate/database": "^9.0",
-                "illuminate/support": "^9.0",
-                "krlove/code-generator": "^1.0",
-                "php": "^8.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^9.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Krlove\\EloquentModelGenerator\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Eloquent Model Generator",
-            "support": {
-                "issues": "https://github.com/krlove/eloquent-model-generator/issues",
-                "source": "https://github.com/krlove/eloquent-model-generator/tree/2.0.0"
-            },
-            "time": "2022-02-19T15:03:08+00:00"
         },
         {
             "name": "laravel/pint",
