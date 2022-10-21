@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Marque;
+use App\Models\Modele;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -10,8 +12,8 @@ class SettingsController extends Controller
     //
     public function getSettings()
     {
-        $marques = DB::table('marques')->get();
-        $models = DB::table('models')->get();
+        $marques = Marque::get();
+        $models = Modele::get();
         return view('settings', ['marques' => $marques, 'models' => $models]);
     }
 
@@ -19,13 +21,13 @@ class SettingsController extends Controller
     {
         $arr = $req->toArray();
         array_shift($arr);
-        $marques = DB::table('marques')->insert($arr);
+        $marques = Marque::insert($arr);
         return redirect('/admin/settings');
     }
 
     public function delMarque($id)
     {
-        $marques = DB::table('marques')->where('id', $id)->delete();
+        $marques = Marque::where('id', $id)->delete();
         return redirect('/admin/settings');
     }
 }

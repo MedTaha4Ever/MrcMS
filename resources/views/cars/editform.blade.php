@@ -44,7 +44,7 @@
                             required><br><br>
 
                         <label for="marque">marque</label><br>
-                        <select class="form-control" name="marque" id="marque">
+                        <select class="form-control" id="marque">
                             @if (empty($marques))
                                 <option value="0">Pas de Marques</option>
                             @else

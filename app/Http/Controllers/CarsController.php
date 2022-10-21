@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Car;
+use App\Models\Marque;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 
 class CarsController extends Controller
@@ -11,9 +12,8 @@ class CarsController extends Controller
     //
     public function select()
     {
-        $cars = DB::table('cars')
-            ->join('models', 'cars.model', '=', 'models.id')
-            ->select('cars.*', 'models.name as modName', 'models.year')
+        $cars = Car::join('modeles', 'cars.model', '=', 'modeles.id')
+            ->select('cars.*', 'modeles.name as modName', 'modeles.year')
             ->get();
         // dump($cars);
         return view('cars', ['cars' => $cars]);
@@ -21,7 +21,7 @@ class CarsController extends Controller
 
     public function addform()
     {
-        $marques = DB::table('marques')->get();
+        $marques = Marque::get();
         // $marques = $marques->toArray();
         // $models = $models->toArray();
         // dump($marques);
@@ -34,19 +34,18 @@ class CarsController extends Controller
         // print_r($arr);
         array_shift($arr);
         $arr['created_at'] = Carbon::now();
-        $cars = DB::table('cars')->insert($arr);
+        $cars = Car::insert($arr);
         return redirect('/admin/cars');
     }
 
     public function editform($id)
     {
-        $cars = DB::table('cars')
-            ->where('cars.id', "=", $id)
-            ->join('models', 'cars.model', '=', 'models.id')
-            ->select('cars.*', 'models.id as model_id', 'models.name as modName', 'models.marque_id as marque_id', 'models.year')
+        $cars = Car::where('cars.id', "=", $id)
+            ->join('modeles', 'cars.model', '=', 'modeles.id')
+            ->select('cars.*', 'modeles.id as model_id', 'modeles.name as modName', 'modeles.marque_id as marque_id', 'modeles.year')
             ->get();
 
-        $marques = DB::table('marques')->get();
+        $marques = Marque::get();
         // $cars = $cars->toArray();
         // $status = DB::table('contracts')->where('car_id', $id)->where('date_r', '<', date('c'))->get();
         // $status = $status->toArray();
@@ -61,13 +60,13 @@ class CarsController extends Controller
         $arr = $req->toArray();
         array_shift($arr);
         $arr['updated_at'] = Carbon::now();
-        $cars = DB::table('cars')->where('id', $arr['id'])->update($arr);
+        $cars = Car::where('id', $arr['id'])->update($arr);
         return redirect('/admin/cars');
     }
 
     public function delete(Request $req)
     {
-        $cars = DB::table('cars')->where('id', $req->id)->delete();
+        $cars = Car::where('id', $req->id)->delete();
         return redirect('/admin/cars');
     }
 }
