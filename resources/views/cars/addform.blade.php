@@ -45,13 +45,13 @@
                     {{-- <input type="text" class="form-control" name="marque" id="marque" required><br><br> --}}
 
                     <label for="model">Modele</label><br>
-                    <select class="form-control" name="model" id="model">
+                    <select class="form-control" name="modele_id" id="model">
 
                     </select><br><br>
                     {{-- <input type="text" class="form-control" name="model" id="model" required><br><br> --}}
 
                     <label for="date_cir">Date de premier circulation</label><br>
-                    <input type="date" class="form-control" name="date_cir" id="date_cir" required><br><br>
+                    <input type="date" class="form-control" name="dpc" id="date_cir" required><br><br>
 
                     <label for="km">Kilometrage</label><br>
                     <input type="number" class="form-control" name="km" id="km" required><br><br>

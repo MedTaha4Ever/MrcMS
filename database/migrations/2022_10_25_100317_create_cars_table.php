@@ -14,14 +14,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('cars', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
             $table->id();
             $table->string('mat');
-            $table->string('model')->unique();
-            $table->date('date_cir');
-            $table->unsignedBigInteger('contract_id');
-            $table->bigInteger('km');
-            $table->string('status');
+            $table->biginteger('modele_id');
+            $table->date('dpc');
+            $table->biginteger('contract_id');
             $table->timestamps();
         });
     }

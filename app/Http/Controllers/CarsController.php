@@ -12,7 +12,7 @@ class CarsController extends Controller
     //
     public function select()
     {
-        $cars = Car::join('modeles', 'cars.model', '=', 'modeles.id')
+        $cars = Car::join('modeles', 'cars.modele_id', '=', 'modeles.id')
             ->select('cars.*', 'modeles.name as modName', 'modeles.year')
             ->get();
         // dump($cars);
@@ -41,7 +41,7 @@ class CarsController extends Controller
     public function editform($id)
     {
         $cars = Car::where('cars.id', "=", $id)
-            ->join('modeles', 'cars.model', '=', 'modeles.id')
+            ->join('modeles', 'cars.modele_id', '=', 'modeles.id')
             ->select('cars.*', 'modeles.id as model_id', 'modeles.name as modName', 'modeles.marque_id as marque_id', 'modeles.year')
             ->get();
 
