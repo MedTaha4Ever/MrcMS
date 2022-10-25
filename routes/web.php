@@ -48,12 +48,15 @@ Route::get('/getActualModels', [ModelsController::class, 'getActualModels'])->na
 Route::get('/admin/clients', [ClientsController::class, 'select'])->name('clients')->middleware('auth');
 
 
-
+//contracts
 Route::get('/admin/contracts', function () {
     return view('contracts');
 })->middleware('auth');
 
-
+//dashboard
+Route::get('/admin', function () {
+    return view('welcome');
+})->middleware('auth');
 
 // parametre
 Route::get('/admin/settings', [SettingsController::class, 'getSettings'])->middleware('auth');

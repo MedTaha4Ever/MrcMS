@@ -29,7 +29,7 @@
     <link href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
     @yield('css')
-    {{-- @inertiaHead --}}
+
 </head>
 
 <body id="page-top">

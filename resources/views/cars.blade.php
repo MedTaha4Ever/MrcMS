@@ -1,3 +1,6 @@
+@php
+
+@endphp 
 @extends('sections.layout')
 
 @section('title', 'Voitures')
@@ -27,9 +30,10 @@
                                     <tbody>
                                         @foreach ($cars as $car)
                                             <tr data-child-value="<div><ul><li><b>Age</b>:  {{ $diff =
-                                                    Carbon\Carbon::parse($car->date_cir)->diffInYears(Carbon\Carbon::now()) .
+                                                    Carbon\Carbon::parse($car->dpc)->diffInYears(Carbon\Carbon::now()) .
+                                                    {{-- App\Http\Controllers\DateController::ageCalculator(Carbon\Carbon::parse($car->dpc)). --}}
                                                     ' ans </li><li><b>D.P.C</b>: ' .
-                                                    date('d M Y', strtotime($car->date_cir)) .
+                                                    date('d M Y', strtotime($car->dpc)) .
                                                     '</li></ul>' }}</div>">
                                                 <td class="details-control"></td>
                                                 <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Circle-icons-car.svg/1200px-Circle-icons-car.svg.png"
