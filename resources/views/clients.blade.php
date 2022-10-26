@@ -27,14 +27,17 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($clients as $client)
-                                            <tr data-child-value="{{ $client->note }}">
+                                            <tr data-child-value="Notes: {{ $client->notes }}<br> C.I.N: {{ $client->cin }}">
                                                 <td class="details-control"></td>
                                                 <td><img src="https://bootdey.com/img/Content/avatar/avatar1.png"
                                                         width="32" height="32" class="rounded-circle my-n1"
                                                         alt="Avatar"></td>
                                                 <td>{{ $client->f_name . ' ' . $client->l_name }}</td>
                                                 <td>{{ $client->permis }}</td>
-                                                <td @if ($client->date_permis < now()) style="background-color:red" @endif>
+                                                @php
+                                                    $diff = Carbon\Carbon::parse($client->date_permis)->diffInYears(Carbon\Carbon::now())
+                                                @endphp
+                                                <td @if ($diff > 10) style="background-color:red" @endif>
                                                     {{ date('d/m/Y', strtotime($client->date_permis)) }}</td>
                                                 <td>{{ $diff = Carbon\Carbon::parse($client->b_date)->diffInYears(Carbon\Carbon::now()) }}
                                                     ans
@@ -83,9 +86,6 @@
     @stop
     @section('scripts')
         <script defer>
-            function format(value) {
-                return '<div>Notes: ' + value + '</div>';
-            }
             $(document).ready(function() {
                 let table = $('#c_table').DataTable({});
 
@@ -100,7 +100,7 @@
                         tr.removeClass('shown');
                     } else {
                         // Open this row
-                        row.child(format(tr.data('child-value'))).show();
+                        row.child(tr.data('child-value')).show();
                         tr.addClass('shown');
                     }
                 });
