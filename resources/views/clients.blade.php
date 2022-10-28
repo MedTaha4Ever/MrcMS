@@ -21,13 +21,12 @@
                                             <th>N° Permis</th>
                                             <th>Date permis</th>
                                             <th>Age</th>
-                                            <th>Adresse</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($clients as $client)
-                                            <tr data-child-value="Notes: {{ $client->notes }}<br> C.I.N: {{ $client->cin }}">
+                                            <tr data-child-value="Notes: {{ $client->notes }}<br> C.I.N: {{ $client->cin }}<br> Adresse: {{ $client->adrs }}">
                                                 <td class="details-control"></td>
                                                 <td><img src="https://bootdey.com/img/Content/avatar/avatar1.png"
                                                         width="32" height="32" class="rounded-circle my-n1"
@@ -37,12 +36,11 @@
                                                 @php
                                                     $diff = Carbon\Carbon::parse($client->date_permis)->diffInYears(Carbon\Carbon::now())
                                                 @endphp
-                                                <td @if ($diff > 10) style="background-color:red" @endif>
+                                                <td @if ($diff >= 10) style="background-color:red" @endif>
                                                     {{ date('d/m/Y', strtotime($client->date_permis)) }}</td>
                                                 <td>{{ $diff = Carbon\Carbon::parse($client->b_date)->diffInYears(Carbon\Carbon::now()) }}
                                                     ans
                                                 </td>
-                                                <td>{{ $client->adrs }}</td>
                                                 @if ($client->contract_id > 0)
                                                     <td><span class="badge bg-success">{{ $client->contract_id }}</span>
                                                     </td>
