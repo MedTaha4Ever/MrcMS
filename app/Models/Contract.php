@@ -6,16 +6,16 @@ use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Contracts extends Model
+class Contract extends Model
 {
     public function car_id()
     {
-        return $this->hasMany(Cars::class);
+        return $this->hasMany(Car::class);
     }
 
     public function client_id()
     {
-        return $this->hasMany(Clients::class);
+        return $this->hasMany(Client::class);
     }
     use HasFactory;
 }
