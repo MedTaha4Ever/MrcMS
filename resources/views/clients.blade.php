@@ -26,23 +26,26 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($clients as $client)
-                                            <tr data-child-value="Notes: {{ $client->notes }}<br> C.I.N: {{ $client->cin }}<br> Adresse: {{ $client->adrs }}">
+                                            @php
+                                                $childValue = "Notes: " . e($client->notes) . "<br> C.I.N: " . e($client->cin) . "<br> Adresse: " . e($client->adrs);
+                                                $permisDate = \Carbon\Carbon::parse($client->date_permis);
+                                                $permisAge = $permisDate->diffInYears(\Carbon\Carbon::now());
+                                                $birthDate = \Carbon\Carbon::parse($client->b_date);
+                                                $clientAge = $birthDate->diffInYears(\Carbon\Carbon::now());
+                                            @endphp
+                                            <tr data-child-value="{{ $childValue }}">
                                                 <td class="details-control"></td>
-                                                <td><img src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                <td><img src="{{ asset('img/default_avatar.png') }}" {{-- Placeholder for local asset --}}
                                                         width="32" height="32" class="rounded-circle my-n1"
                                                         alt="Avatar"></td>
                                                 <td>{{ $client->f_name . ' ' . $client->l_name }}</td>
                                                 <td>{{ $client->permis }}</td>
-                                                @php
-                                                    $diff = Carbon\Carbon::parse($client->date_permis)->diffInYears(Carbon\Carbon::now())
-                                                @endphp
-                                                <td @if ($diff >= 10) style="background-color:red" @endif>
-                                                    {{ date('d/m/Y', strtotime($client->date_permis)) }}</td>
-                                                <td>{{ $diff = Carbon\Carbon::parse($client->b_date)->diffInYears(Carbon\Carbon::now()) }}
-                                                    ans
+                                                <td @if ($permisAge >= 10) class="bg-danger-soft" @endif> {{-- Using a class instead of inline style --}}
+                                                    {{ $permisDate->format('d/m/Y') }}
                                                 </td>
-                                                @if ($client->contract_id > 0)
-                                                    <td><span class="badge bg-success">{{ $client->contract_id }}</span>
+                                                <td>{{ $clientAge }} ans</td>
+                                                @if ($client->contract_id > 0) {{-- Assuming contract_id indicates active contract --}}
+                                                    <td><span class="badge bg-success">Actif</span> {{-- Simplified status --}}
                                                     </td>
                                                 @else
                                                     <td><span class="badge bg-danger">Pas de Contrat</span></td>
@@ -81,39 +84,30 @@
                 </div>
             </div>
         </div>
-    @stop
-    @section('scripts')
-        <script defer>
-            $(document).ready(function() {
-                let table = $('#c_table').DataTable({});
+    @stop {{-- End of content --}}
 
-                // Add event listener for opening and closing details
-                $('#c_table').on('click', 'td.details-control', function() {
-                    let tr = $(this).closest('tr');
-                    let row = table.row(tr);
-
-                    if (row.child.isShown()) {
-                        // This row is already open - close it
-                        row.child.hide();
-                        tr.removeClass('shown');
-                    } else {
-                        // Open this row
-                        row.child(tr.data('child-value')).show();
-                        tr.addClass('shown');
-                    }
-                });
-            });
-        </script>
-    @stop
     @section('css')
+        @parent 
+        {{-- datatables_custom.css is expected to be loaded via parent layout or globally if used by multiple pages --}}
+        {{-- If not, uncomment: <link rel="stylesheet" href="{{ asset('css/datatables_custom.css') }}"> --}}
         <style>
-            td.details-control {
-                background: url('http://www.datatables.net/examples/resources/details_open.png') no-repeat center center;
-                cursor: pointer;
-            }
-
-            tr.shown td.details-control {
-                background: url('http://www.datatables.net/examples/resources/details_close.png') no-repeat center center;
+            /* Example of a utility class that could be in a global CSS file */
+            .bg-danger-soft {
+                background-color: rgba(231, 74, 59, 0.3) !important; /* Soft red for highlighting */
             }
         </style>
+    @stop
+
+    @section('scripts')
+        @parent
+        <script>
+            // Pass data to JavaScript by attaching to relevant elements
+            document.addEventListener('DOMContentLoaded', function () {
+                const cTable = document.getElementById('c_table');
+                if(cTable) {
+                    cTable.setAttribute('data-lang-url', "{{ asset('local/fr-FR.json') }}");
+                }
+            });
+        </script>
+        <script src="{{ asset('js/clients_table.js') }}" defer></script>
     @stop

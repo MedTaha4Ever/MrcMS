@@ -1,6 +1,3 @@
-@php
-
-@endphp 
 @extends('sections.layout')
 
 @section('title', 'Voitures')
@@ -29,29 +26,33 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($cars as $car)
-                                            <tr data-child-value="<div><ul><li><b>Age</b>:  {{ $diff =
-                                                    Carbon\Carbon::parse($car->dpc)->diffInYears(Carbon\Carbon::now()) .
-                                                    {{-- App\Http\Controllers\DateController::ageCalculator(Carbon\Carbon::parse($car->dpc)). --}}
-                                                    ' ans </li><li><b>D.P.C</b>: ' .
-                                                    date('d M Y', strtotime($car->dpc)) .
-                                                    '</li></ul>' }}</div>">
+                                            @php
+                                                // Prepare data for child row here for cleanliness
+                                                $dpcDate = \Carbon\Carbon::parse($car->dpc);
+                                                $age = $dpcDate->diffInYears(\Carbon\Carbon::now());
+                                                $dpcFormatted = $dpcDate->format('d M Y');
+                                                $childRowHtml = "<div><ul><li><b>Age</b>: {$age} ans</li><li><b>D.P.C</b>: {$dpcFormatted}</li></ul></div>";
+                                            @endphp
+                                            <tr data-child-value="{{ e($childRowHtml) }}">
                                                 <td class="details-control"></td>
-                                                <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Circle-icons-car.svg/1200px-Circle-icons-car.svg.png"
+                                                <td><img src="{{ asset('img/default_car_icon.png') }}" {{-- Placeholder for local asset --}}
                                                         width="32" height="32" class="rounded-circle my-n1"
-                                                        alt="Avatar"></td>
+                                                        alt="Car Avatar"></td>
                                                 <td>{{ $car->mat }}</td>
-                                                <td>{{ $car->modName }}</td>
+                                                {{-- Assuming $car->modele->name is available after controller refactor ($car->load('modele')) --}}
+                                                <td>{{ $car->modele->name ?? ($car->modName ?? 'N/A') }}</td>
                                                 <td>{{ $car->km }} Km</td>
-                                                @if ($car->contract_id > 0)
-                                                    <td><span class="badge bg-danger">{{ $car->contract_id }}</span></td>
+                                                @if ($car->contract_id > 0 && $car->contract) {{-- Assuming $car->contract relationship exists --}}
+                                                    <td><span class="badge bg-danger">Contrat {{ $car->contract->id ?? $car->contract_id }}</span></td>
                                                 @else
                                                     <td><span class="badge bg-success">Pas de Contrat</span></td>
                                                 @endif
                                                 <td>
-                                                    <a href="{{ url('admin/cars/edit/' . $car->id) }}"
-                                                        class="btn btn-primary">Modifier</a>
+                                                    {{-- Assuming named routes like 'admin.cars.edit' and 'admin.cars.delete' --}}
+                                                    <a href="{{ route('admin.cars.edit', $car->id) }}" {{-- Example, adjust if route name is different --}}
+                                                        class="btn btn-primary btn-sm">Modifier</a>
                                                     <button type="button" value="{{ $car->id }}"
-                                                        class="btn btn-danger delete" data-toggle="modal"
+                                                        class="btn btn-danger btn-sm delete" data-toggle="modal"
                                                         data-target="#deleteModal">Supprimer</button>
                                                 </td>
                                             </tr>
@@ -81,76 +82,43 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <a href="{{ url('admin/cars/delete/') }}" class="btn btn-danger delete_id">Supprimer</a>
+                        {{-- Ensure delete_id has data-base-url for the JS to construct the href --}}
+                        <a href="#" class="btn btn-danger delete_id" data-base-url="{{ url('admin/cars/delete') }}">Supprimer</a>
                     </div>
                 </div>
             </div>
         </div>
-    @stop
-    @section('scripts')
-        <script defer>
-            $(document).ready(function() {
-                let table = $('#c_table').DataTable({
-                    language: {
-                        url: '{{ asset('local/fr-FR.json') }}'
-                    }
-                });
+    @stop {{-- End of @section('content') --}}
 
-                // Add event listener for opening and closing details
-                $('#c_table').on('click', 'td.details-control', function() {
-                    let tr = $(this).closest('tr');
-                    let row = table.row(tr);
-
-                    if (row.child.isShown()) {
-                        // This row is already open - close it
-                        row.child.hide();
-                        tr.removeClass('shown');
-                    } else {
-                        // Open this row
-                        row.child(tr.data('child-value')).show();
-                        tr.addClass('shown');
-                    }
-                });
-            });
-            //modal delete button append id
-            $('.delete').click(function() {
-                let id = $(this).val();
-                $('.delete_id').attr('href', `{{ url('admin/cars/delete/') }}/` + id);
-            })
-            //cards searsh
-            // function search() {
-            //     let input, filter, cards, cardContainer, h5, title, i;
-            //     input = document.getElementById("myFilter");
-            //     filter = input.value.toUpperCase();
-            //     cardContainer = document.getElementById("CarCards");
-            //     cards = cardContainer.getElementsByClassName("card");
-            //     cardC = cardContainer.getElementsByClassName("containerX");;
-            //     for (i = 0; i < cards.length; i++) {
-            //         title = cards[i].querySelector(".card-body");
-            //         if (title.innerText.toUpperCase().indexOf(filter) > -1) {
-            //             cardC[i].style.display = "";
-            //         } else {
-            //             cardC[i].style.display = "none";
-            //         }
-            //     }
-            // }
-        </script>
-    @stop
     @section('css')
-        <style>
-            td.details-control {
-                background: url('http://www.datatables.net/examples/resources/details_open.png') no-repeat center center;
-                cursor: pointer;
-            }
-
-            tr.shown td.details-control {
-                background: url('http://www.datatables.net/examples/resources/details_close.png') no-repeat center center;
-            }
-        </style>
+        @parent {{-- Include CSS from parent layout if any --}}
+        <link rel="stylesheet" href="{{ asset('css/datatables_custom.css') }}">
+        {{-- Add other CSS links if needed, e.g., for DataTables itself if not in main layout --}}
+        {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> --}}
     @stop
+
+    @section('scripts')
+        @parent {{-- Include JS from parent layout if any --}}
+        {{-- Add other JS links if needed, e.g., for DataTables itself if not in main layout --}}
+        {{-- <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script> --}}
+        
+        {{-- Pass data to JavaScript --}}
+        <script>
+            // It's better to attach data to specific elements (like #c_table) than using global vars
+            document.addEventListener('DOMContentLoaded', function () {
+                const cTable = document.getElementById('c_table');
+                if(cTable) {
+                    cTable.setAttribute('data-lang-url', "{{ asset('local/fr-FR.json') }}");
+                }
+            });
+        </script>
+        <script src="{{ asset('js/cars_table.js') }}" defer></script>
+    @stop
+
     @section('addcar')
         <div class="clearfix">
-            <a href="{{ url('admin/cars/add') }}" class="btn btn-primary btn-lg float-right mr-5" id="addcar"
+             {{-- Assuming named route 'admin.cars.add' --}}
+            <a href="{{ route('admin.cars.add') }}" class="btn btn-primary btn-lg float-right mr-5" id="addcar"
                 aria-label="addcar">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-plus-circle-fill" viewBox="0 0 16 16">

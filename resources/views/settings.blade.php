@@ -14,7 +14,7 @@
             <div class="card-body">
                 <h5 class="card-title">Marques</h5>
                 <a href="#" data-toggle="modal" data-target="#addMarqueModal" class="btn btn-primary">
-                    <li class="fas fa-fw fa-plus-square"></li>
+                    <i class="fas fa-fw fa-plus-square"></i> {{-- Corrected icon HTML --}}
                 </a>
                 <br><br>
                 <table class="table">
@@ -29,13 +29,13 @@
                             <tr>
                                 <th scope="row">{{ $marque->name }}</th>
                                 <td>
-                                    <a class="btn btn-primary"
-                                        href="{{ url('admin/settings/marque/edit/') . '/' . $marque->id }}">
-                                        <li class="fas fa-fw fa-edit"></li>
+                                    <a class="btn btn-primary btn-sm"
+                                        href="{{ url('admin/settings/marque/edit/' . $marque->id) }}"> {{-- Added btn-sm for consistency --}}
+                                        <i class="fas fa-fw fa-edit"></i> {{-- Corrected icon HTML --}}
                                     </a>
-                                    <button type="button" class="btn btn-danger delete" data-toggle="modal"
+                                    <button type="button" class="btn btn-danger btn-sm delete" data-toggle="modal" {{-- Added btn-sm --}}
                                         data-target="#deleteMarqueModal" value="{{ $marque->id }}">
-                                        <li class="fas fa-fw fa-times"></li>
+                                        <i class="fas fa-fw fa-times"></i> {{-- Corrected icon HTML --}}
                                     </button>
                                 </td>
                             </tr>
@@ -50,7 +50,7 @@
             <div class="card-body">
                 <h5 class="card-title">Modeles</h5>
                 <a href="{{ url('admin/settings/model/add/') }}" class="btn btn-primary">
-                    <li class="fas fa-fw fa-plus-square"></li>
+                    <i class="fas fa-fw fa-plus-square"></i> {{-- Corrected icon HTML --}}
                 </a>
                 <br><br>
                 <table class="table">
@@ -66,21 +66,20 @@
                         @foreach ($models as $model)
                             <tr>
                                 <th scope="row">{{ $model->name }}</th>
-                                @foreach ($marques as $marque)
-                                    @if ($marque->id == $model->marque_id)
-                                        <td scope="row">{{ $marque->name }}</td>
-                                    @endif
-                                @endforeach
+                                {{-- Use the relationship to get marque name --}}
+                                <td scope="row">{{ $model->marque->name ?? 'N/A' }}</td>
                                 <td scope="row">{{ $model->year }}</td>
                                 <td>
-                                    <a class="btn btn-primary"
-                                        href="{{ url('admin/settings/marque/edit/') . '/' . $model->id }}">
-                                        <li class="fas fa-fw fa-edit"></li>
+                                    {{-- Commenting out incorrect/non-functional links for modeles --}}
+                                    {{-- <a class="btn btn-primary btn-sm"
+                                        href="{{ url('admin/settings/model/edit/' . $model->id) }}">
+                                        <i class="fas fa-fw fa-edit"></i>
                                     </a>
-                                    <a class="btn btn-danger"
-                                        href="{{ url('admin/settings/marque/delete/') . '/' . $model->id }}">
-                                        <li class="fas fa-fw fa-times"></li>
-                                    </a>
+                                    <a class="btn btn-danger btn-sm"
+                                        href="{{ url('admin/settings/model/delete/' . $model->id) }}">
+                                        <i class="fas fa-fw fa-times"></i>
+                                    </a> --}}
+                                    N/A
                                 </td>
                             </tr>
                         @endforeach
@@ -126,10 +125,12 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <a href="{{ url('admin/settings/marque/delete/') }}" type="button"
-                        class="btn btn-danger delete_id">Supprimer</a>
-                    </form>
+                    Voulez-vous vraiment supprimer cette marque ? Cette action est irréversible.
+                </div>
+                <div class="modal-footer"> {{-- Corrected structure: buttons in footer --}}
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <a href="#" type="button" class="btn btn-danger delete_id_marque" data-base-url="{{ url('admin/settings/marque/delete') }}">Supprimer</a>
+                    {{-- Removed orphaned </form> tag --}}
                 </div>
             </div>
         </div>
@@ -138,12 +139,6 @@
 @endsection
 
 @section('scripts')
-    <script defer type="text/javascript">
-        $('.delete').click(function() {
-            let id = $(this).val();
-            $('.delete_id').attr('href', `{{ url('admin/settings/marque/delete/') }}/` + id);
-        })
-    </script>
-
-
+    @parent {{-- Good practice to include parent scripts --}}
+    <script src="{{ asset('js/settings_page.js') }}" defer></script>
 @stop

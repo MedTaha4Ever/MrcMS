@@ -8,7 +8,8 @@
     <div class="container-fluid">
         <!-- Page Heading -->
         <h1 class="h3 mb-2 text-gray-800">Voitures</h1>
-        <input type="text" id="myFilter" class="form-control" onkeyup="search()" placeholder="Filtrer le Voitures.."><br>
+        {{-- Removed onkeyup="search()" - event listener will be attached by oldcars_page.js --}}
+        <input type="text" id="myFilter" class="form-control" placeholder="Filtrer le Voitures.."><br>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5" id="CarCards">
             @foreach ($cars as $car)
                 <div class="col mb-4 containerX">
@@ -59,7 +60,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <a href="{{ url('admin/cars/delete/') }}" class="btn btn-danger delete_id">Supprimer</a>
+                    {{-- Added data-base-url for the JavaScript to correctly build the delete URL --}}
+                    <a href="#" class="btn btn-danger delete_id" data-base-url="{{ url('admin/cars/delete') }}">Supprimer</a>
                 </div>
             </div>
         </div>
@@ -70,29 +72,8 @@
 @endsection
 
 @section('scripts')
-    <script defer type="text/javascript">
-        $('.delete').click(function() {
-            let id = $(this).val();
-            $('.delete_id').attr('href', `{{ url('admin/cars/delete/') }}/` + id);
-        })
-
-        function search() {
-            let input, filter, cards, cardContainer, h5, title, i;
-            input = document.getElementById("myFilter");
-            filter = input.value.toUpperCase();
-            cardContainer = document.getElementById("CarCards");
-            cards = cardContainer.getElementsByClassName("card");
-            cardC = cardContainer.getElementsByClassName("containerX");;
-            for (i = 0; i < cards.length; i++) {
-                title = cards[i].querySelector(".card-body");
-                if (title.innerText.toUpperCase().indexOf(filter) > -1) {
-                    cardC[i].style.display = "";
-                } else {
-                    cardC[i].style.display = "none";
-                }
-            }
-        }
-    </script>
+    @parent {{-- It's good practice to include parent scripts if this section is also in the layout --}}
+    <script src="{{ asset('js/oldcars_page.js') }}" defer></script>
 @endsection
 
 @section('addcar')

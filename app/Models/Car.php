@@ -8,14 +8,24 @@ use Illuminate\Database\Eloquent\Model;
 class Car extends Model
 {
     use HasFactory;
-    public function contract_id()
+
+    protected $fillable = [
+        'mat',
+        'modele_id',
+        'dpc',
+        'contract_id',
+        'km',
+    ];
+
+    public function contract()
     {
-        return $this->hasMany(Contracts::class);
+        // Assuming 'contract_id' is the foreign key in the 'cars' table
+        return $this->belongsTo(Contract::class, 'contract_id');
     }
 
-    public function model()
+    public function modele()
     {
-        return $this->hasOne(Models::class);
+        // Assuming 'modele_id' is the foreign key in the 'cars' table
+        return $this->belongsTo(Modele::class, 'modele_id');
     }
-    
 }
