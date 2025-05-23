@@ -4,21 +4,13 @@
 @section('cars-active', 'active')
 
 @section('scripts')
-    <script defer type="text/javascript">
-        $("#marque").change(function() {
-            $.ajax({
-                url: "{{ route('Marque.getModels') }}?marque_id=" + $(this).val(),
-                method: 'GET',
-                success: function(data) {
-                    $('#model').html(data);
-                }
-            });
-        });
-    </script>
+    {{-- Inline script moved to public/js/cars_form.js --}}
+    {{-- Ensure this script is loaded in the main layout, potentially via a stack --}}
+    <script src="{{ asset('js/cars_form.js') }}" defer></script>
 @endsection
 
 @section('content')
-    {{-- {{ dump($marques)}} --}}
+    {{-- Removed commented out dump: {{ dump($marques)}} --}}
     <div class="container-fluid">
 
         <!-- Page Heading -->
@@ -33,7 +25,7 @@
                     <input type="text" class="form-control" name="mat" id="mat" required><br><br>
 
                     <label for="marque">marque</label><br>
-                    <select class="form-control" id="marque">
+                    <select class="form-control" id="marque" data-models-url="{{ route('Marque.getModels') }}">
                         @if (empty($marques))
                             <option value="0">Pas de Marques</option>
                         @else
@@ -42,13 +34,13 @@
                             @endforeach
                         @endif
                     </select><br><br>
-                    {{-- <input type="text" class="form-control" name="marque" id="marque" required><br><br> --}}
+                    {{-- Removed commented out input: <input type="text" class="form-control" name="marque" id="marque" required><br><br> --}}
 
                     <label for="model">Modele</label><br>
                     <select class="form-control" name="modele_id" id="model">
-
+                        {{-- Options will be populated by JavaScript --}}
                     </select><br><br>
-                    {{-- <input type="text" class="form-control" name="model" id="model" required><br><br> --}}
+                    {{-- Removed commented out input: <input type="text" class="form-control" name="model" id="model" required><br><br> --}}
 
                     <label for="date_cir">Date de premier circulation</label><br>
                     <input type="date" class="form-control" name="dpc" id="date_cir" required><br><br>

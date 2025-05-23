@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\View\View; // Added import
 
 class ClientsController extends Controller
 {
-    public function select()
+    public function select(): View // Added return type
     {
-        $clients = Client::get();
+        $clients = Client::all(); // Changed from Get() to all() for brevity
         return view('clients', ['clients' => $clients]);
     }
 }

@@ -3,31 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\Marque;
-use App\Models\Modele;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Modele; // Kept for the getSettings method, though not ideal without relation
+use App\Http\Requests\StoreMarqueRequest;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+// Removed: use Illuminate\Http\Request; // Replaced by FormRequest or not needed
+// Removed: use Illuminate\Support\Facades\DB; // Not used
 
 class SettingsController extends Controller
 {
-    //
-    public function getSettings()
+    public function getSettings(): View
     {
-        $marques = Marque::get();
-        $models = Modele::get();
-        return view('settings', ['marques' => $marques, 'models' => $models]);
+        // Fetching all marques, and then all modeles separately.
+        // If modeles are displayed grouped by marque, consider Marque::with('modeles')->get()
+        // and adjust the view accordingly. For now, maintaining current data structure.
+        $marques = Marque::all(); 
+        $modeles = Modele::all(); // Changed variable name from $models to $modeles for clarity
+        return view('settings', ['marques' => $marques, 'models' => $modeles]); // Kept 'models' key for view compatibility
     }
 
-    public function addMarque(Request $req)
+    public function addMarque(StoreMarqueRequest $request): RedirectResponse
     {
-        $arr = $req->toArray();
-        array_shift($arr);
-        $marques = Marque::insert($arr);
-        return redirect('/admin/settings');
+        Marque::create($request->validated());
+        return redirect('/admin/settings')->with('success', 'Marque added successfully.');
     }
 
-    public function delMarque($id)
+    public function delMarque(Marque $marque): RedirectResponse
     {
-        $marques = Marque::where('id', $id)->delete();
-        return redirect('/admin/settings');
+        // Add check if marque has associated models before deleting if necessary
+        // For example: if ($marque->modeles()->exists()) { ... return error ... }
+        $marque->delete();
+        return redirect('/admin/settings')->with('success', 'Marque deleted successfully.');
     }
 }

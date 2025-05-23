@@ -55,8 +55,12 @@
                                                 name="password" autocomplete="password" placeholder="Mot de Passe">
                                         </div>
                                         @error('email')
-                                            <a class="btn-danger" href="#">{{ $message }}</a><br><br>
+                                            {{-- Improved error display --}}
+                                            <div class="alert alert-danger p-1 my-2" role="alert">
+                                                {{ $message }}
+                                            </div>
                                         @enderror
+                                        {{-- Removed extra <br> that was after the previous error display --}}
                                         <button type="submit" class="btn btn-primary btn-user btn-block">
                                             Login
                                         </button>
@@ -79,8 +83,8 @@
 
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('js/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-    <<!-- Custom scripts for all pages-->
-        <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
 
 </body>
 

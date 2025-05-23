@@ -7,9 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Modele extends Model
 {
-    public function marque_id()
-    {
-        return $this->hasOne(Marques::class);
-    }
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'year',
+        'marque_id',
+    ];
+
+    public function marque()
+    {
+        return $this->belongsTo(Marque::class, 'marque_id');
+    }
+
+    public function cars()
+    {
+        return $this->hasMany(Car::class, 'modele_id');
+    }
 }

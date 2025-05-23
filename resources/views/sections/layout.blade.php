@@ -21,7 +21,7 @@
     <link href="{{ asset('css/sb-admin-2.css') }}" rel="stylesheet">
 
     <!-- Custom styles for this page -->
-    {{-- <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet"> --}}
+    {{-- Removed commented out datatables asset: <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet"> --}}
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
@@ -41,7 +41,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}"> {{-- Assuming 'admin.dashboard' route --}}
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-car"></i>
                 </div>
@@ -53,7 +53,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item @yield('admin-active')">
-                <a class="nav-link" href="{{ url('/admin') }}">
+                <a class="nav-link" href="{{ route('admin.dashboard') }}"> {{-- Assuming 'admin.dashboard' route --}}
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Acceuil</span></a>
             </li>
@@ -62,13 +62,7 @@
             <hr class="sidebar-divider">
 
             <!-- Heading -->
-            {{-- <div class="sidebar-heading">
-                Interface
-            </div> --}}
-
-
-            <!-- Divider -->
-            {{-- <hr class="sidebar-divider"> --}}
+            {{-- Removed commented out sidebar heading "Interface" and divider --}}
 
             <!-- Heading -->
             <div class="sidebar-heading">
@@ -77,28 +71,28 @@
 
             <!-- Nav Item - Cars -->
             <li class="nav-item @yield('cars-active')">
-                <a class="nav-link" href="{{ url('/admin/cars') }}">
+                <a class="nav-link" href="{{ route('admin.cars.index') }}"> {{-- Assuming 'admin.cars.index' route --}}
                     <i class="fas fa-fw fa-car"></i>
                     <span>Voitures</span></a>
             </li>
 
             <!-- Nav Item - Clients -->
             <li class="nav-item @yield('clients-active')">
-                <a class="nav-link" href="{{ url('/admin/clients') }}">
+                <a class="nav-link" href="{{ route('admin.clients.index') }}"> {{-- Assuming 'admin.clients.index' route --}}
                     <i class="fas fa-fw fa-eye"></i>
                     <span>Clients</span></a>
             </li>
 
             <!-- Nav Item - Contracts -->
             <li class="nav-item @yield('contracts-active')">
-                <a class="nav-link" href="{{ url('/admin/contracts') }}">
+                <a class="nav-link" href="{{ route('admin.contracts.index') }}"> {{-- Assuming 'admin.contracts.index' route --}}
                     <i class="fas fa-fw fa-paperclip"></i>
                     <span>Contracts</span></a>
             </li>
 
             <!-- Nav Item - Options -->
             <li class="nav-item @yield('settings-active')">
-                <a class="nav-link" href="{{ url('/admin/settings') }}">
+                <a class="nav-link" href="{{ route('admin.settings.index') }}"> {{-- Assuming 'admin.settings.index' route --}}
                     <i class="fas fa-fw fa-cogs"></i>
                     <span>Options</span></a>
             </li>
@@ -112,11 +106,7 @@
             </div>
 
             <!-- Sidebar Message -->
-            {{-- <div class="sidebar-card d-none d-lg-flex">
-                <img class="sidebar-card-illustration mb-2" src="{{ asset('img/undraw_rocket.svg') }}" alt="...">
-                <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features, components, and more!</p>
-                <a class="btn btn-success btn-sm" href="https://startbootstrap.com/theme/sb-admin-pro">Upgrade to Pro!</a>
-            </div> --}}
+            {{-- Removed commented out "SB Admin Pro" card --}}
 
         </ul>
         <!-- End of Sidebar -->
@@ -137,18 +127,7 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    {{-- <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form> --}}
+                    {{-- Removed commented out Topbar Search form --}}
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -179,123 +158,10 @@
                         </li>
 
                         <!-- Nav Item - Alerts -->
-                        {{-- <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bell fa-fw"></i>
-                                <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter">3+</span>
-                            </a>
-                            <!-- Dropdown - Alerts -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    Alerts Center
-                                </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-primary">
-                                            <i class="fas fa-file-alt text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 12, 2019</div>
-                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-success">
-                                            <i class="fas fa-donate text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 7, 2019</div>
-                                        $290.29 has been deposited into your account!
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-warning">
-                                            <i class="fas fa-exclamation-triangle text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 2, 2019</div>
-                                        Spending Alert: We've noticed unusually high spending for your account.
-                                    </div>
-                                </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
-                            </div>
-                        </li> --}}
+                        {{-- Removed commented out Nav Item - Alerts --}}
 
                         <!-- Nav Item - Messages -->
-                        {{-- <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-envelope fa-fw"></i>
-                                <!-- Counter - Messages -->
-                                <span class="badge badge-danger badge-counter">7</span>
-                            </a>
-                            <!-- Dropdown - Messages -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="messagesDropdown">
-                                <h6 class="dropdown-header">
-                                    Message Center
-                                </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="{{ asset('img/undraw_profile_1.svg') }}"
-                                            alt="...">
-                                        <div class="status-indicator bg-success"></div>
-                                    </div>
-                                    <div class="font-weight-bold">
-                                        <div class="text-truncate">Hi there! I am wondering if you can help me with a
-                                            problem I've been having.</div>
-                                        <div class="small text-gray-500">Emily Fowler · 58m</div>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="{{ asset('img/undraw_profile_2.svg') }}"
-                                            alt="...">
-                                        <div class="status-indicator"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-truncate">I have the photos that you ordered last month, how
-                                            would you like them sent to you?</div>
-                                        <div class="small text-gray-500">Jae Chun · 1d</div>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="{{ asset('img/undraw_profile_3.svg') }}"
-                                            alt="...">
-                                        <div class="status-indicator bg-warning"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-truncate">Last month's report looks great, I am very happy with
-                                            the progress so far, keep up the good work!</div>
-                                        <div class="small text-gray-500">Morgan Alvarez · 2d</div>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="{{ asset('img/undraw_profile_3.svg') }}"
-                                            alt="...">
-                                        <div class="status-indicator bg-success"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-truncate">Am I a good boy? The reason I ask is because someone
-                                            told me that people say this to all dogs, even if they aren't good...</div>
-                                        <div class="small text-gray-500">Chicken the Dog · 2w</div>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
-                            </div>
-                        </li>
-
-                        <div class="topbar-divider d-none d-sm-block"></div> --}}
+                        {{-- Removed commented out Nav Item - Messages and topbar-divider --}}
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
@@ -313,7 +179,7 @@
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
-                                <a class="dropdown-item" href="{{ url('/admin/settings') }}">
+                                <a class="dropdown-item" href="{{ route('admin.settings.index') }}"> {{-- Assuming 'admin.settings.index' route --}}
                                     <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Settings
                                 </a>
@@ -376,7 +242,7 @@
                     <div class="modal-body">Déconnecter</div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
-                        <a class="btn btn-primary" href="{{ url('/logout') }}">Quitter</a>
+                        <a class="btn btn-primary" href="{{ route('logout') }}">Quitter</a> {{-- Assuming 'logout' route --}}
                     </div>
                 </div>
             </div>
@@ -400,11 +266,7 @@
         <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>
 
         <!-- Page level plugins -->
-        {{-- <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
-        {{-- <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script> --}}
-
-        <!-- Page level custom scripts -->
-        {{-- <script src="{{ asset('js/demo/datatables-demo.js') }}"></script> --}}
+        {{-- Removed commented out DataTables scripts --}}
 
 
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>

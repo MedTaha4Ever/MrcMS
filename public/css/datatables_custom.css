@@ -1,0 +1,9 @@
+/* public/css/datatables_custom.css */
+td.details-control {
+    background: url('../img/datatables/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+
+tr.shown td.details-control {
+    background: url('../img/datatables/details_close.png') no-repeat center center;
+}

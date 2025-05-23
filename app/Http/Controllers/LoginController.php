@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class LoginController extends Controller
 {
@@ -11,9 +13,9 @@ class LoginController extends Controller
      * Handle an authentication attempt.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function authenticate(Request $request)
+    public function authenticate(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -27,17 +29,17 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Vérifier vos informations',
-            'password' => 'Vérifier vos informations',
-        ]);
+            'email' => __('auth.failed_custom'), // Consider using lang files for messages
+            'password' => __('auth.failed_custom'), // Consider using lang files for messages
+        ])->withInput($request->only('email')); // Persist email input
     }
 
-    public function LoginView()
+    public function LoginView(): View
     {
         return view('login');
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
 

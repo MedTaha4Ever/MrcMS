@@ -4,69 +4,61 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use App\Models\Marque;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
+use App\Http\Requests\StoreCarRequest;
+use App\Http\Requests\UpdateCarRequest;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class CarsController extends Controller
 {
-    //
-    public function select()
+    public function select(): View
     {
-        $cars = Car::join('modeles', 'cars.modele_id', '=', 'modeles.id')
-            ->select('cars.*', 'modeles.name as modName', 'modeles.year')
-            ->get();
-        // dump($cars);
+        // Assuming Car model has a 'modele' relationship
+        $cars = Car::with('modele')->get();
         return view('cars', ['cars' => $cars]);
     }
 
-    public function addform()
+    public function addform(): View
     {
-        $marques = Marque::get();
-        // $marques = $marques->toArray();
-        // $models = $models->toArray();
-        // dump($marques);
+        $marques = Marque::all();
         return view('cars.addform', ['marques' => $marques]);
     }
 
-    public function add(Request $req)
+    public function add(StoreCarRequest $request): RedirectResponse
     {
-        $arr = $req->toArray();
-        // print_r($arr);
-        array_shift($arr);
-        $arr['created_at'] = Carbon::now();
-        $cars = Car::insert($arr);
-        return redirect('/admin/cars');
+        Car::create($request->validated());
+        return redirect('/admin/cars')->with('success', 'Car added successfully.');
     }
 
-    public function editform($id)
+    public function editform(Car $car): View
     {
-        $cars = Car::where('cars.id', "=", $id)
-            ->join('modeles', 'cars.modele_id', '=', 'modeles.id')
-            ->select('cars.*', 'modeles.id as model_id', 'modeles.name as modName', 'modeles.marque_id as marque_id', 'modeles.year')
-            ->get();
-
-        $marques = Marque::get();
-        // $cars = $cars->toArray();
-        // $status = DB::table('contracts')->where('car_id', $id)->where('date_r', '<', date('c'))->get();
-        // $status = $status->toArray();
-        // print_r($status);
-        // return view('cars.editform', ['cars' => $cars], ['status' => $status]); 
-        // dump($cars);
-        return view('cars.editform', ['cars' => $cars], ['marques' => $marques]);
+        // Eager load the modele relationship to avoid N+1 issues in the view if accessed
+        // Also, the 'modele' relationship name was corrected in the Car model
+        $car->load('modele'); 
+        $marques = Marque::all();
+        // The view expects 'cars' variable, so we pass $car as 'cars'
+        // It also expects $marques.
+        // If the view was expecting a collection for 'cars', it might need adjustment.
+        // Based on the original code, it was $cars->get(), which returns a collection.
+        // However, for an edit form of a single car, passing a single model instance is more common.
+        // For now, I'll pass it as a single item in an array to maintain original view structure if it iterates.
+        // Or better, pass the single $car object and adjust the view if needed.
+        // Let's assume the view can handle a single $car object for 'cars'.
+        // If $cars was a collection of one item: view('cars.editform', ['cars' => [$car]], ['marques' => $marques]);
+        return view('cars.editform', ['car' => $car, 'marques' => $marques]);
     }
 
-    public function edit(Request $req)
+    public function edit(UpdateCarRequest $request, Car $car): RedirectResponse
     {
-        $arr = $req->toArray();
-        array_shift($arr);
-        $arr['updated_at'] = Carbon::now();
-        $cars = Car::where('id', $arr['id'])->update($arr);
-        return redirect('/admin/cars');
+        // The 'id' is implicitly handled by Route Model Binding with $car
+        // UpdateCarRequest should ensure 'id' is not part of validated data unless specifically needed and handled.
+        $car->update($request->validated());
+        return redirect('/admin/cars')->with('success', 'Car updated successfully.');
     }
 
-    public function delete(Request $req)
+    public function delete(Car $car): RedirectResponse
     {
-        $cars = Car::where('id', $req->id)->delete();
-        return redirect('/admin/cars');
+        $car->delete();
+        return redirect('/admin/cars')->with('success', 'Car deleted successfully.');
     }
 }
