@@ -47,13 +47,11 @@
                                                 @else
                                                     <td><span class="badge bg-success">Pas de Contrat</span></td>
                                                 @endif
-                                                <td>
-                                                    {{-- Assuming named routes like 'admin.cars.edit' and 'admin.cars.delete' --}}
-                                                    <a href="{{ route('admin.cars.edit', $car->id) }}" {{-- Example, adjust if route name is different --}}
-                                                        class="btn btn-primary btn-sm">Modifier</a>
-                                                    <button type="button" value="{{ $car->id }}"
+                                                <td>                                                    <a href="{{ route('admin.cars.edit', $car->id) }}"
+                                                        class="btn btn-primary btn-sm">Modifier</a>                                                    <button type="button" value="{{ $car->id }}"
                                                         class="btn btn-danger btn-sm delete" data-toggle="modal"
-                                                        data-target="#deleteModal">Supprimer</button>
+                                                        data-target="#deleteModal" title="Supprimer cette voiture"
+                                                        data-delete-url="{{ route('admin.cars.delete', $car->id) }}">Supprimer</button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -80,10 +78,12 @@
                     <div class="modal-body">
                         Supprimer la voiture :
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        {{-- Ensure delete_id has data-base-url for the JS to construct the href --}}
-                        <a href="#" class="btn btn-danger delete_id" data-base-url="{{ url('admin/cars/delete') }}">Supprimer</a>
+                    <div class="modal-footer">                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <form action="#" method="POST" style="display: inline" class="delete-form">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger delete_id">Supprimer</button>
+                        </form>
                     </div>
                 </div>
             </div>

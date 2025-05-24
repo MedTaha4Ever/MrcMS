@@ -21,43 +21,35 @@ class CarsController extends Controller
     {
         $marques = Marque::all();
         return view('cars.addform', ['marques' => $marques]);
-    }
-
-    public function add(StoreCarRequest $request): RedirectResponse
+    }    public function add(StoreCarRequest $request): RedirectResponse
     {
         Car::create($request->validated());
-        return redirect('/admin/cars')->with('success', 'Car added successfully.');
-    }
-
-    public function editform(Car $car): View
+        return redirect()->route('admin.cars.index')->with('success', 'Car added successfully.');
+    }    public function editform(Car $car): View
     {
-        // Eager load the modele relationship to avoid N+1 issues in the view if accessed
-        // Also, the 'modele' relationship name was corrected in the Car model
-        $car->load('modele'); 
-        $marques = Marque::all();
-        // The view expects 'cars' variable, so we pass $car as 'cars'
-        // It also expects $marques.
-        // If the view was expecting a collection for 'cars', it might need adjustment.
-        // Based on the original code, it was $cars->get(), which returns a collection.
-        // However, for an edit form of a single car, passing a single model instance is more common.
-        // For now, I'll pass it as a single item in an array to maintain original view structure if it iterates.
-        // Or better, pass the single $car object and adjust the view if needed.
-        // Let's assume the view can handle a single $car object for 'cars'.
-        // If $cars was a collection of one item: view('cars.editform', ['cars' => [$car]], ['marques' => $marques]);
-        return view('cars.editform', ['car' => $car, 'marques' => $marques]);
-    }
-
-    public function edit(UpdateCarRequest $request, Car $car): RedirectResponse
+        // Eager load the modele relationship and its marque
+        $car->load('modele.marque');
+        $marques = Marque::orderBy('name')->get();
+        return view('cars.editform', [
+            'car' => $car,
+            'marques' => $marques
+        ]);
+    }    public function edit(UpdateCarRequest $request, Car $car): RedirectResponse
     {
-        // The 'id' is implicitly handled by Route Model Binding with $car
-        // UpdateCarRequest should ensure 'id' is not part of validated data unless specifically needed and handled.
-        $car->update($request->validated());
-        return redirect('/admin/cars')->with('success', 'Car updated successfully.');
-    }
+        $validated = $request->validated();
+        
+        // Update the car with validated data
+        $car->update([
+            'mat' => $validated['mat'],
+            'modele_id' => $validated['modele_id'],
+            'dpc' => $validated['dpc'],
+            'km' => $validated['km'],
+        ]);
 
-    public function delete(Car $car): RedirectResponse
+        return redirect()->route('admin.cars.index')->with('success', 'Car updated successfully.');
+    }    public function delete(Car $car): RedirectResponse
     {
         $car->delete();
-        return redirect('/admin/cars')->with('success', 'Car deleted successfully.');
+        return redirect()->route('admin.cars.index')->with('success', 'Car deleted successfully.');
     }
 }

@@ -33,11 +33,9 @@
                             @endforeach
                         @endif
                     </select><br><br>
-                    {{-- Removed commented out input: <input type="text" class="form-control" name="marque" id="marque" required><br><br> --}}
-
-                    <label for="model">Modele</label><br>
-                    <select class="form-control" name="modele_id" id="model">
-                        {{-- Options will be populated by JavaScript --}}
+                    {{-- Removed commented out input: <input type="text" class="form-control" name="marque" id="marque" required><br><br> --}}                    <label for="modele">Modele</label><br>
+                    <select class="form-control" name="modele_id" id="modele">
+                        <option value="">Sélectionnez d'abord une marque</option>
                     </select><br><br>
                     {{-- Removed commented out input: <input type="text" class="form-control" name="model" id="model" required><br><br> --}}
 

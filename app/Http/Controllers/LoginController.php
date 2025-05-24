@@ -23,7 +23,7 @@ class LoginController extends Controller
         ]);        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             
-            return redirect()->intended(route('admin.cars.index'));
+            return redirect()->intended(route('admin.dashboard'));
         }
 
         // Debug failed login

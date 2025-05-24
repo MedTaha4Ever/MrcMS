@@ -18,11 +18,10 @@
         <div class="card shadow mb-4">
             <div class="card-body">
                 {{-- Assuming route for edit uses PUT and includes car ID, e.g., route('cars.update', $car) --}}
-                {{-- For now, keeping existing action and method, but this could be improved with RESTful routing --}}
-                <form action="{{ url('admin/cars/edit') }}" method="post" id="editform">
+                {{-- For now, keeping existing action and method, but this could be improved with RESTful routing --}}                <form action="{{ route('admin.cars.update', $car->id) }}" method="post" id="editform">
                     @csrf
-                    {{-- If using PUT/PATCH for update, @method('PUT') would be here --}}
-                    <input type="hidden" value="{{ $car->id }}" name="id"> {{-- Keep if controller relies on 'id' input --}}
+                    @method('PUT')
+                    {{-- Car ID is now in the route, no need for hidden input --}}
                     
                     <label for="mat">Immatriculation</label><br>
                     <input type="text" class="form-control" name="mat" id="mat" value="{{ old('mat', $car->mat) }}"

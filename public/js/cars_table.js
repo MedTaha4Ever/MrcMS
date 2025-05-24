@@ -32,19 +32,11 @@ $(document).ready(function() {
                  tr.addClass('shown');
             }
         }
-    });
-
-    // Modal delete button append id
-    // Assumes the delete button in the modal has class 'delete_id'
-    // and the trigger buttons have class 'delete' and value='car_id'
+    });    // Modal delete button update form action
     $('#deleteModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget); // Button that triggered the modal
-        let carId = button.val(); 
-        let deleteButtonInModal = $(this).find('.delete_id');
-        let baseUrl = deleteButtonInModal.data('base-url'); // e.g. data-base-url="{{ url('admin/cars/delete') }}"
-        
-        if (baseUrl) {
-            deleteButtonInModal.attr('href', baseUrl + '/' + carId);
-        }
+        let carId = button.val();
+        let form = $(this).find('.delete-form');
+        form.attr('action', button.data('delete-url') || `/admin/cars/${carId}`);
     });
 });

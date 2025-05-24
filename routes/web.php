@@ -30,15 +30,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // Dashboard
     Route::get('/', function () {
         return view('welcome');
-    })->name('dashboard');
-
-    // Cars management routes
+    })->name('dashboard');    // Cars management routes
     Route::get('/cars', [CarsController::class, 'select'])->name('cars.index');
     Route::get('/cars/add', [CarsController::class, 'addform'])->name('cars.add');
-    Route::post('/cars/add', [CarsController::class, 'add'])->name('cars.store');
-    Route::get('/cars/edit/{id}', [CarsController::class, 'editform'])->name('cars.edit');
-    Route::post('/cars/edit', [CarsController::class, 'edit'])->name('cars.update');
-    Route::get('/cars/delete/{id}', [CarsController::class, 'delete'])->name('cars.delete');
+    Route::post('/cars/add', [CarsController::class, 'add'])->name('cars.store');    
+    Route::get('/cars/{car}/edit', [CarsController::class, 'editform'])->name('cars.edit');
+    Route::put('/cars/{car}', [CarsController::class, 'edit'])->name('cars.update');
+    Route::delete('/cars/{car}', [CarsController::class, 'delete'])->name('cars.delete');
 
     // Clients routes
     Route::get('/clients', [ClientsController::class, 'select'])->name('clients.index');
