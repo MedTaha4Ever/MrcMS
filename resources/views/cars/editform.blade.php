@@ -29,8 +29,7 @@
                         required><br><br>
 
                     <label for="marque">Marque</label><br>
-                    {{-- The data-models-url is used by cars_form.js to fetch models --}}
-                    <select class="form-control" id="marque" name="marque_selector_for_js_hook" data-models-url="{{ route('Marque.getModels') }}">
+                    {{-- The data-models-url is used by cars_form.js to fetch models --}}                    <select class="form-control" id="marque" name="marque_selector_for_js_hook" data-models-url="{{ route('admin.models.getModels') }}">
                         @if ($marques->isEmpty())
                             <option value="">Pas de Marques</option>
                         @else

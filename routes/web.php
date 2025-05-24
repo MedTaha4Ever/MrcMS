@@ -23,45 +23,44 @@ use Illuminate\Support\Facades\Auth;
 // Login
 Route::get('/', [LoginController::class, 'LoginView'])->name('login');
 Route::post('/', [LoginController::class, 'authenticate']);
-Route::get('/logout', [LoginController::class, 'logout']);
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// voitures
-Route::get('/admin/cars', [CarsController::class, 'select'])->middleware('auth')->name('voitures');
+// Admin routes
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard
+    Route::get('/', function () {
+        return view('welcome');
+    })->name('dashboard');
 
-// ajout de voiture
-Route::get('/admin/cars/add', [CarsController::class, 'addform'])->middleware('auth');
-Route::post('/admin/cars/add', [CarsController::class, 'add'])->middleware('auth');
+    // Cars management routes
+    Route::get('/cars', [CarsController::class, 'select'])->name('cars.index');
+    Route::get('/cars/add', [CarsController::class, 'addform'])->name('cars.add');
+    Route::post('/cars/add', [CarsController::class, 'add'])->name('cars.store');
+    Route::get('/cars/edit/{id}', [CarsController::class, 'editform'])->name('cars.edit');
+    Route::post('/cars/edit', [CarsController::class, 'edit'])->name('cars.update');
+    Route::get('/cars/delete/{id}', [CarsController::class, 'delete'])->name('cars.delete');
 
-// modification de voiture
-Route::get('/admin/cars/edit/{id}', [CarsController::class, 'editform'])->middleware('auth');
-Route::post('/admin/cars/edit', [CarsController::class, 'edit'])->middleware('auth');
+    // Clients routes
+    Route::get('/clients', [ClientsController::class, 'select'])->name('clients.index');
 
-// suppression de voiture
-Route::get('/admin/cars/delete/{id}', [CarsController::class, 'delete'])->middleware('auth');
+    // Contracts routes
+    Route::get('/contracts', function () {
+        return view('contracts');
+    })->name('contracts.index');
 
-// liste des modele sous formes <option>
-Route::get('/getModels', [ModelsController::class, 'getModels'])->name('Marque.getModels')->middleware('auth');
-Route::get('/getActualModels', [ModelsController::class, 'getActualModels'])->name('Marque.getActualModels')->middleware('auth');
-
-
-//Clients
-Route::get('/admin/clients', [ClientsController::class, 'select'])->name('clients')->middleware('auth');
-
-
-//contracts
-Route::get('/admin/contracts', function () {
-    return view('contracts');
-})->middleware('auth');
-
-//dashboard
-Route::get('/admin', function () {
-    return view('welcome');
-})->middleware('auth');
-
-// parametre
-Route::get('/admin/settings', [SettingsController::class, 'getSettings'])->middleware('auth');
-Route::post('/admin/settings/marque/add', [SettingsController::class, 'addMarque'])->middleware('auth');
-Route::get('/admin/settings/marque/delete/{id}', [SettingsController::class, 'delMarque'])->middleware('auth');
+    // Settings routes
+    Route::get('/settings', [SettingsController::class, 'getSettings'])->name('settings.index');
+    
+    // Marque routes
+    Route::post('/settings/marque/add', [SettingsController::class, 'addMarque'])->name('settings.marque.add');
+    Route::get('/settings/marque/delete/{id}', [SettingsController::class, 'delMarque'])->name('settings.marque.delete');
+    
+    // Models routes
+    Route::get('/models', [ModelsController::class, 'getModels'])->name('models.getModels');
+    Route::get('/models/actual', [ModelsController::class, 'getActualModels'])->name('models.getActualModels');
+    Route::post('/settings/model/add', [ModelsController::class, 'addModel'])->name('settings.model.add');
+    Route::get('/settings/model/delete/{id}', [ModelsController::class, 'deleteModel'])->name('settings.model.delete');
+});
 
 /*
 |--------------------------------------------------------------------------

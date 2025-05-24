@@ -24,8 +24,7 @@
                     <label for="mat">Immatriculation</label><br>
                     <input type="text" class="form-control" name="mat" id="mat" required><br><br>
 
-                    <label for="marque">marque</label><br>
-                    <select class="form-control" id="marque" data-models-url="{{ route('Marque.getModels') }}">
+                    <label for="marque">marque</label><br>                    <select class="form-control" id="marque" data-models-url="{{ route('admin.models.getModels') }}">
                         @if (empty($marques))
                             <option value="0">Pas de Marques</option>
                         @else

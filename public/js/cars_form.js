@@ -15,33 +15,35 @@ $(document).ready(function() {
     // The original code used: "{{ route('Marque.getModels') }}"
     // This needs to be available to the external script.
     // A common way is to put it in a data attribute in the HTML:
-    // <select class="form-control" id="marque" data-models-url="{{ route('Marque.getModels') }}">
-
-    $("#marque").change(function() {
+    // <select class="form-control" id="marque" data-models-url="{{ route('Marque.getModels') }}">    $("#marque").change(function() {
         const marqueId = $(this).val();
         const url = $(this).data('models-url'); // Read from data attribute
+        const modelSelect = $('#modele'); // Use the correct selector matching the HTML
 
         if (marqueId && url) {
             $.ajax({
                 url: url + "?marque_id=" + marqueId, // Construct URL with query param
                 method: 'GET',
                 success: function(data) {
-                    $('#model').html(data);
+                    modelSelect.html(data);
+                    // If this is an edit form and we have an initial model ID, select it
+                    const initialModelId = modelSelect.data('initial-model-id');
+                    if (initialModelId) {
+                        modelSelect.val(initialModelId);
+                    }
                 },
                 error: function(xhr, status, error) {
-                    // Optional: Handle errors, e.g., show a message to the user
                     console.error("Error fetching models: " + error);
-                    $('#model').html('<option value="">Could not load models</option>');
+                    modelSelect.html('<option value="">Could not load models</option>');
                 }
             });
         } else {
-            $('#model').html(''); // Clear models if no marque selected or URL missing
+            modelSelect.html('<option value="">Sélectionnez d\'abord une marque</option>');
         }
     });
 
     // Trigger change on page load if a marque is already selected (e.g. in an edit form)
-    // This part was not in the original script but is good practice for edit forms.
-    // if ($("#marque").val()) {
-    //     $("#marque").trigger('change');
-    // }
+    if ($("#marque").val()) {
+        $("#marque").trigger('change');
+    }
 });

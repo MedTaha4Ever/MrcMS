@@ -10,8 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class CarsController extends Controller
-{
-    public function select(): View
+{    public function select(): View
     {
         // Assuming Car model has a 'modele' relationship
         $cars = Car::with('modele')->get();

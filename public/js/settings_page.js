@@ -11,4 +11,16 @@ $(document).ready(function() {
             deleteButtonInModal.attr('href', baseUrl + '/' + marqueId);
         }
     });
+
+    // Modal delete model button append id
+    $('#deleteModelModal').on('show.bs.modal', function (event) {
+        let button = $(event.relatedTarget); // Button that triggered the modal
+        let modelId = button.val(); 
+        let deleteButtonInModal = $(this).find('.delete_id_model'); // Ensure this class is unique if other delete modals exist
+        let baseUrl = deleteButtonInModal.data('base-url');
+        
+        if (baseUrl) {
+            deleteButtonInModal.attr('href', baseUrl + '/' + modelId);
+        }
+    });
 });
