@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Car;
 use App\Models\Marque;
 use App\Models\Reservation;
+use App\Models\Client;
+use App\Mail\ReservationConfirmation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; // Or session-based client ID
+use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 
 class ClientReservationController extends Controller
@@ -26,20 +29,17 @@ class ClientReservationController extends Controller
         $endDate = $request->input('end_date', Carbon::today()->addDays(7)->toDateString()); // Default to 1 week
 
         $cars = Car::with('modele.marque')
-            ->whereDoesntHave('reservations', function ($query) use ($startDate, $endDate) {
-                $query->where(function ($q) use ($startDate, $endDate) {
-                    $q->where('start_date', '<', $endDate)
-                      ->where('end_date', '>', $startDate);
-                });
-            })
+            ->availableForDates($startDate, $endDate)
             ->when($request->filled('marque_id'), function ($q) use ($request) {
                 $q->whereHas('modele', function($q_modele) use ($request) {
                     $q_modele->where('marque_id', $request->input('marque_id'));
                 });
             })
+            ->orderBy('mat')
             ->paginate(10);
 
         $marques = Marque::orderBy('name')->get();
+        $currentMarqueId = $request->input('marque_id');
 
         // In a real scenario, you would return a view:
         return view('client.cars.available', compact('cars', 'startDate', 'endDate', 'marques', 'currentMarqueId'));
@@ -65,16 +65,9 @@ class ClientReservationController extends Controller
             'client_id' => 'nullable|exists:clients,id', // In a real app, this would likely come from Auth::id()
         ]);
 
-        // Basic availability check (can be more sophisticated)
-        $isAvailable = !$car->reservations()
-            ->where(function ($query) use ($validated) {
-                $query->where('start_date', '<', $validated['end_date'])
-                      ->where('end_date', '>', $validated['start_date']);
-            })->exists();
-
-        if (!$isAvailable) {
-            // return back()->withErrors(['availability' => 'Car is not available for the selected dates.'])->withInput();
-            return response()->json(['message' => 'Car is not available for the selected dates.'], 422);
+        // Check availability using the Car model method
+        if (!$car->isAvailableForDates($validated['start_date'], $validated['end_date'])) {
+            return back()->withErrors(['availability' => 'Car is not available for the selected dates.'])->withInput();
         }
         
         $clientId = $request->input('client_id');
@@ -88,15 +81,11 @@ class ClientReservationController extends Controller
         }
 
         if (!$clientId) {
-            // return back()->withErrors(['client_error' => 'Client identification is required.'])->withInput();
-             return response()->json(['message' => 'Client identification is required.'], 400);
+            return back()->withErrors(['client_error' => 'Client identification is required.'])->withInput();
         }
 
-        // Basic price calculation (example: $100 per day)
-        $startDate = Carbon::parse($validated['start_date']);
-        $endDate = Carbon::parse($validated['end_date']);
-        $days = $startDate->diffInDays($endDate);
-        $totalPrice = $days * 100; // Replace with actual car price logic
+        // Calculate price using the Car model method
+        $totalPrice = $car->calculatePrice($validated['start_date'], $validated['end_date']);
 
         $reservation = Reservation::create([
             'client_id' => $clientId, 
@@ -107,7 +96,18 @@ class ClientReservationController extends Controller
             'total_price' => $totalPrice,
         ]);
 
-        return redirect()->route('reservations.mine', ['client_id' => $clientId])->with('success', 'Reservation request submitted successfully! Your reservation ID is ' . $reservation->id);
+        // Send email confirmation if client has email
+        $client = Client::find($clientId);
+        if ($client && $client->email) {
+            try {
+                Mail::to($client->email)->send(new ReservationConfirmation($reservation));
+            } catch (\Exception $e) {
+                // Log the error but don't fail the reservation
+                \Log::error('Failed to send reservation confirmation email: ' . $e->getMessage());
+            }
+        }
+
+        return redirect()->route('reservations.mine', ['client_id' => $clientId])->with('success', 'Reservation request submitted successfully! Your reservation ID is ' . $reservation->id . '. A confirmation email has been sent.');
     }
 
     /**

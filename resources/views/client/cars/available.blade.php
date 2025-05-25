@@ -47,9 +47,23 @@
                             <img src="{{ $car->image_url ?? asset('img/default_car_icon.png') }}" class="card-img-top" alt="{{ $car->modele->marque->name }} {{ $car->modele->name }}" style="height: 200px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title">{{ $car->modele->marque->name }} {{ $car->modele->name }}</h5>
-                                <p class="card-text">Matricule: {{ $car->mat }}</p>
-                                <p class="card-text">KM: {{ $car->km }}</p>
-                                <a href="{{ route('cars.showDetails', $car) }}" class="btn btn-info btn-sm">Details & Reserve</a>
+                                <p class="card-text">
+                                    <strong>Matricule:</strong> {{ $car->mat }}<br>
+                                    <strong>KM:</strong> {{ number_format($car->km) }}<br>
+                                    <strong>Age:</strong> {{ $car->age }} years<br>
+                                    <strong>Price:</strong> <span class="text-success fw-bold">€{{ number_format($car->price_per_day, 2) }}/day</span>
+                                </p>
+                                @if($startDate && $endDate)
+                                    @php
+                                        $days = \Carbon\Carbon::parse($startDate)->diffInDays(\Carbon\Carbon::parse($endDate));
+                                        $total = $days * $car->price_per_day;
+                                    @endphp
+                                    <div class="alert alert-success p-2 mb-2">
+                                        <small><strong>Total for {{ $days }} day{{ $days > 1 ? 's' : '' }}:</strong> €{{ number_format($total, 2) }}</small>
+                                    </div>
+                                @endif
+                                <a href="{{ route('cars.showDetails', $car) }}{{ $startDate && $endDate ? '?start_date=' . $startDate . '&end_date=' . $endDate : '' }}" 
+                                   class="btn btn-primary btn-sm w-100">Details & Reserve</a>
                             </div>
                         </div>
                     </div>
