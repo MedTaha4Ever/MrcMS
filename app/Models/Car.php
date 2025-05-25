@@ -102,6 +102,30 @@ class Car extends Model
     }
 
     /**
+     * Get the brand name through modele relationship.
+     */
+    public function getBrandAttribute(): string
+    {
+        return $this->modele?->marque?->name ?? 'Unknown';
+    }
+
+    /**
+     * Get the model name.
+     */
+    public function getModelAttribute(): string
+    {
+        return $this->modele?->name ?? 'Unknown';
+    }
+
+    /**
+     * Get the year.
+     */
+    public function getYearAttribute(): int
+    {
+        return $this->modele?->year ?? 0;
+    }
+
+    /**
      * Scope for available cars.
      */
     public function scopeAvailable($query)

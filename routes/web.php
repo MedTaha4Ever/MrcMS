@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\CarsController;
 use App\Http\Controllers\ClientsController;
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ModelsController;
+use App\Http\Controllers\PublicReservationController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -48,9 +50,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::delete('/clients/{client}', [ClientsController::class, 'destroy'])->name('clients.destroy');
 
     // Contracts routes
-    Route::get('/contracts', function () {
-        return view('contracts');
-    })->name('contracts.index');
+    Route::resource('contracts', ContractController::class);
 
     // Settings routes
     Route::get('/settings', [SettingsController::class, 'getSettings'])->name('settings.index');
@@ -68,28 +68,21 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
 /*
 |--------------------------------------------------------------------------
-| Client-Facing Reservation Routes
+| Public Reservation Routes (French Interface)
 |--------------------------------------------------------------------------
 */
 
-// Assuming a new controller for these actions, e.g., ClientReservationController
-// Route::get('/cars/available', [ClientReservationController::class, 'index'])->name('cars.available');
-// Route::get('/cars/{car}/details', [ClientReservationController::class, 'showCarDetails'])->name('cars.showDetails');
-// Route::post('/cars/{car}/reserve', [ClientReservationController::class, 'storeReservation'])->name('cars.reserve');
-// Route::get('/my-reservations', [ClientReservationController::class, 'myReservations'])->name('reservations.mine');
-// For now, let's use existing controllers if possible or create placeholders if the controller doesn't exist yet.
-// Since ClientReservationController doesn't exist yet, I will comment these out for now
-// and create the controller in the next step.
-// For the purpose of this step (adding routes), I'll define them but they won't work until the controller is made.
+// Public car browsing and reservation system
+Route::get('/voitures', [PublicReservationController::class, 'index'])->name('public.cars.index');
+Route::get('/voitures/{car}', [PublicReservationController::class, 'show'])->name('public.cars.show');
+Route::get('/voitures/{car}/reserver', [PublicReservationController::class, 'create'])->name('public.reservations.create');
+Route::post('/reservations', [PublicReservationController::class, 'store'])->name('public.reservations.store');
+Route::get('/reservations/{reservation}/succes', [PublicReservationController::class, 'success'])->name('public.reservations.success');
+Route::post('/api/check-availability', [PublicReservationController::class, 'checkAvailability'])->name('api.check.availability');
 
-// Placeholder: Define routes with a temporary controller or closure if needed for testing route definition
-// For now, I will assume 'ClientReservationController' will be created.
-// To make the file syntactically valid if the controller doesn't exist yet,
-// I'll use a string reference that Laravel can defer resolving.
-Route::get('/cars/available', [\App\Http\Controllers\ClientReservationController::class, 'index'])->name('cars.available');
-Route::get('/cars/{car}/details', [\App\Http\Controllers\ClientReservationController::class, 'showCarDetails'])->name('cars.showDetails');
-Route::post('/cars/{car}/reserve', [\App\Http\Controllers\ClientReservationController::class, 'storeReservation'])->name('cars.reserve');
-Route::get('/my-reservations', [\App\Http\Controllers\ClientReservationController::class, 'myReservations'])->name('reservations.mine');
+// Keep existing routes for backward compatibility
+Route::get('/cars/available', [PublicReservationController::class, 'index'])->name('cars.available');
+Route::get('/cars/{car}/details', [PublicReservationController::class, 'show'])->name('cars.showDetails');
 
 /*
 |--------------------------------------------------------------------------

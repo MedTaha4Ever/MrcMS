@@ -71,30 +71,30 @@
 
             <!-- Nav Item - Cars -->
             <li class="nav-item @yield('cars-active')">
-                <a class="nav-link" href="{{ route('admin.cars.index') }}"> {{-- Assuming 'admin.cars.index' route --}}
+                <a class="nav-link" href="{{ route('admin.cars.index') }}">
                     <i class="fas fa-fw fa-car"></i>
-                    <span>Voitures</span></a>
+                    <span>{{ __('messages.cars') }}</span></a>
             </li>
 
             <!-- Nav Item - Clients -->
             <li class="nav-item @yield('clients-active')">
-                <a class="nav-link" href="{{ route('admin.clients.index') }}"> {{-- Assuming 'admin.clients.index' route --}}
-                    <i class="fas fa-fw fa-eye"></i>
-                    <span>Clients</span></a>
+                <a class="nav-link" href="{{ route('admin.clients.index') }}">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>{{ __('messages.clients') }}</span></a>
             </li>
 
             <!-- Nav Item - Contracts -->
             <li class="nav-item @yield('contracts-active')">
-                <a class="nav-link" href="{{ route('admin.contracts.index') }}"> {{-- Assuming 'admin.contracts.index' route --}}
-                    <i class="fas fa-fw fa-paperclip"></i>
-                    <span>Contracts</span></a>
+                <a class="nav-link" href="{{ route('admin.contracts.index') }}">
+                    <i class="fas fa-fw fa-file-contract"></i>
+                    <span>{{ __('messages.contracts') }}</span></a>
             </li>
 
             <!-- Nav Item - Options -->
             <li class="nav-item @yield('settings-active')">
-                <a class="nav-link" href="{{ route('admin.settings.index') }}"> {{-- Assuming 'admin.settings.index' route --}}
+                <a class="nav-link" href="{{ route('admin.settings.index') }}">
                     <i class="fas fa-fw fa-cogs"></i>
-                    <span>Options</span></a>
+                    <span>{{ __('messages.settings') }}</span></a>
             </li>
 
             <!-- Divider -->
