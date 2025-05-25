@@ -4,6 +4,8 @@
 
 A comprehensive Rental Car Management System built with Laravel 10, designed to streamline car rental operations with modern web technologies. This system provides a complete solution for managing rental vehicles, customers, and bookings with an intuitive and user-friendly web interface.
 
+🌍 **Multilingual Support**: The application is fully localized in French for Tunisia, making it perfect for Tunisian car rental businesses.
+
 > 🚀 **Live Demo**: A working demo is currently running and ready to explore! The application includes sample data for cars, clients, and reservations to help you get started quickly.
 
 ## Features
@@ -22,6 +24,8 @@ A comprehensive Rental Car Management System built with Laravel 10, designed to 
 - **Responsive Design**: Mobile-friendly interface built with Bootstrap 5
 - **Data Validation**: Comprehensive form validation and error handling
 - **Real-time Calculations**: Live price updates as users select rental dates
+- **Contract Management**: Complete contract lifecycle management from creation to completion
+- **French Localization**: Full French language support with Tunisian-specific terminology
 
 ## Quick Start
 
@@ -43,28 +47,30 @@ Then visit `http://localhost:8000` to explore the application with sample data!
 ## Key Features Showcase
 
 ### 🚗 **Car Management System**
-- Browse available vehicles with real-time pricing at `/cars/available`
+- Browse available vehicles with real-time pricing at [/cars/available](#car-availability)
 - Dynamic price calculation based on rental duration
 - Advanced filtering by brand, availability, and date ranges
 - Detailed car information with specifications and pricing
 
 ### 👥 **Client Management** 
-- Complete CRUD operations for customer management at `/admin/clients`
+- Complete CRUD operations for customer management at [/admin/clients](#admin-dashboard)
 - Client statistics and rental history tracking
 - Advanced search and filtering capabilities
 - Comprehensive client profiles with contact information
 
-### 📋 **Reservation System**
+### 📋 **Contract & Reservation System**
 - Real-time availability checking and booking
 - Automated email confirmations for new reservations
-- Reservation history and status tracking
+- Complete contract lifecycle from creation to completion
+- Contract status management (pending, confirmed, completed)
 - Integration between client and vehicle management
 
 ### 🎛️ **Admin Dashboard**
-- Centralized management interface at `/admin`
+- Centralized management interface at [/admin](#admin-dashboard)
 - Vehicle fleet management and pricing control
 - Customer relationship management tools
-- Reservation monitoring and reporting
+- Contract monitoring and reporting
+- French-localized administrative interface
 
 ## Requirements
 
@@ -149,19 +155,24 @@ php artisan db:seed
 
 ### Accessing the Application
 - **Main Application**: Visit `http://localhost:8000` to access the rental management system
-- **Admin Dashboard**: Navigate to `/admin` for administrative functions (default credentials: `test@example.com` / `password`)
+- **Admin Dashboard**: Navigate to `/admin` for administrative functions 
+  - **Default Admin Credentials**: `test@example.com` / `password`
 - **Client Portal**: Browse available cars and make reservations through the main interface
 - **Car Availability**: Check real-time car availability and pricing at `/cars/available`
+- **Contract Management**: Access contract management at `/admin/contracts`
 - **phpMyAdmin**: Database management interface available at `http://localhost:8080` (when using Docker)
+
+> 🔐 **Security Note**: Remember to change the default admin credentials in production environments!
 
 ### Getting Started
 
 1. **Explore Sample Data**: If you ran the database seeder, you'll have sample clients, cars, and reservations ready to explore
-2. **Admin Functions**: Use the [admin panel](/admin) to manage vehicles, customers, and view reservations  
-3. **Test Reservations**: Try the booking system by browsing [available cars](/cars/available) and making test reservations
-4. **Development Mode**: Use `npm run dev` for hot-reloading during development
+2. **Admin Functions**: Use the admin panel at `/admin` to manage vehicles, customers, and view contracts
+3. **Test Reservations**: Try the booking system by browsing available cars at `/cars/available` and making test reservations
+4. **Contract Management**: Explore the contract system at `/admin/contracts` to see the full lifecycle management
+5. **Development Mode**: Use `npm run dev` for hot-reloading during development
 
-> 💡 **Tip**: Start by exploring the [admin client management](/admin/clients) section to see the full CRUD functionality in action!
+> 💡 **Tip**: Start by exploring the admin client management section at `/admin/clients` to see the full CRUD functionality in action!
 
 ## Configuration
 
@@ -171,6 +182,28 @@ The application uses Laravel Sail for Docker development. Key configuration file
 - [`composer.json`](./composer.json) - PHP dependencies and autoloading
 - [`package.json`](./package.json) - JavaScript dependencies and build scripts
 - [`.env.example`](./.env.example) - Environment configuration template
+- [`config/app.php`](./config/app.php) - Application configuration including locale settings
+
+## Localization
+
+The application is fully localized in French for the Tunisian market:
+
+### Language Files
+- [`resources/lang/fr/messages.php`](./resources/lang/fr/messages.php) - General application messages
+- [`resources/lang/fr/validation.php`](./resources/lang/fr/validation.php) - Form validation messages
+
+### Features
+- Complete French interface for all admin functions
+- Tunisian-specific terminology and formatting
+- Date formatting in French locale
+- Currency display in Tunisian Dinars (DT)
+- French validation messages for forms
+
+To switch back to English, modify the `locale` setting in [`config/app.php`](./config/app.php):
+
+```php
+'locale' => 'en', // Change from 'fr' to 'en'
+```
 
 ## Development
 
@@ -210,12 +243,13 @@ php artisan test
 ```
 
 ### Project Structure
-- **Models**: Located in [`app/Models/`](./app/Models/) - Contains Car, Client, Reservation, and Marque models
-- **Controllers**: Located in [`app/Http/Controllers/`](./app/Http/Controllers/) - Handles application logic
-- **Views**: Located in [`resources/views/`](./resources/views/) - Blade templates for the UI
-- **Routes**: Defined in [`routes/web.php`](./routes/web.php) - Application routing
-- **Migrations**: Located in [`database/migrations/`](./database/migrations/) - Database schema
-- **Seeders**: Located in [`database/seeders/`](./database/seeders/) - Sample data generation
+- **Models**: Located in [`app/Models/`](./app/Models/) - Contains Car, Client, Reservation, Marque, and Modele models
+- **Controllers**: Located in [`app/Http/Controllers/`](./app/Http/Controllers/) - Handles application logic including ContractController
+- **Views**: Located in [`resources/views/`](./resources/views/) - Blade templates for the UI with French localization
+- **Routes**: Defined in [`routes/web.php`](./routes/web.php) - Application routing including admin routes
+- **Migrations**: Located in [`database/migrations/`](./database/migrations/) - Database schema with relationship support
+- **Seeders**: Located in [`database/seeders/`](./database/seeders/) - Sample data generation for testing
+- **Localization**: Located in [`resources/lang/fr/`](./resources/lang/fr/) - French translation files
 
 ## Contributing
 
@@ -253,6 +287,8 @@ If you encounter any issues or have questions:
 - **Missing Dependencies**: Run `composer install` and `npm install` to ensure all dependencies are installed
 - **SQLite Issues**: Ensure the `database/database.sqlite` file exists and is writable
 - **Email Configuration**: Check your mail settings in `.env` for email notifications to work
+- **French Localization**: If translations don't appear, ensure the locale is set to 'fr' in [`config/app.php`](./config/app.php)
+- **Contract Issues**: Verify that car-model-brand relationships are properly seeded in the database
 
 ## License
 
