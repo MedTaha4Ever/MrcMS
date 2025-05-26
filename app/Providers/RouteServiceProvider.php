@@ -23,10 +23,12 @@ class RouteServiceProvider extends ServiceProvider
      * Define your route model bindings, pattern filters, and other route configuration.
      *
      * @return void
-     */
-    public function boot()
+     */    public function boot()
     {
         $this->configureRateLimiting();
+
+        // Add explicit model binding for reservations
+        Route::model('reservation', \App\Models\Reservation::class);
 
         $this->routes(function () {
             Route::middleware('api')

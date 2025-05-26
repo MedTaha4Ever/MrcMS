@@ -47,10 +47,16 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/clients/{client}', [ClientsController::class, 'show'])->name('clients.show');
     Route::get('/clients/{client}/edit', [ClientsController::class, 'edit'])->name('clients.edit');
     Route::put('/clients/{client}', [ClientsController::class, 'update'])->name('clients.update');
-    Route::delete('/clients/{client}', [ClientsController::class, 'destroy'])->name('clients.destroy');
-
-    // Contracts routes
-    Route::resource('contracts', ContractController::class);
+    Route::delete('/clients/{client}', [ClientsController::class, 'destroy'])->name('clients.destroy');    // Contracts routes
+    Route::prefix('contracts')->name('contracts.')->group(function() {
+        Route::get('/', [ContractController::class, 'index'])->name('index');
+        Route::get('/create', [ContractController::class, 'create'])->name('create');
+        Route::post('/', [ContractController::class, 'store'])->name('store');
+        Route::get('/{reservation}', [ContractController::class, 'show'])->name('show');
+        Route::get('/{reservation}/edit', [ContractController::class, 'edit'])->name('edit');
+        Route::put('/{reservation}', [ContractController::class, 'update'])->name('update');
+        Route::delete('/{reservation}', [ContractController::class, 'destroy'])->name('destroy');
+    });
 
     // Settings routes
     Route::get('/settings', [SettingsController::class, 'getSettings'])->name('settings.index');
@@ -78,7 +84,6 @@ Route::get('/voitures/{car}', [PublicReservationController::class, 'show'])->nam
 Route::get('/voitures/{car}/reserver', [PublicReservationController::class, 'create'])->name('public.reservations.create');
 Route::post('/reservations', [PublicReservationController::class, 'store'])->name('public.reservations.store');
 Route::get('/reservations/{reservation}/succes', [PublicReservationController::class, 'success'])->name('public.reservations.success');
-Route::post('/api/check-availability', [PublicReservationController::class, 'checkAvailability'])->name('api.check.availability');
 
 // Keep existing routes for backward compatibility
 Route::get('/cars/available', [PublicReservationController::class, 'index'])->name('cars.available');
@@ -90,6 +95,10 @@ Route::get('/cars/{car}/details', [PublicReservationController::class, 'show'])-
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    // Admin API endpoints
+    Route::post('/api/check-availability', [PublicReservationController::class, 'checkAvailability'])->name('api.check.availability');
+
+    // Admin reservation management
     Route::get('/reservations', [\App\Http\Controllers\AdminReservationController::class, 'index'])->name('reservations.index');
     Route::get('/reservations/{reservation}', [\App\Http\Controllers\AdminReservationController::class, 'show'])->name('reservations.show');
     Route::patch('/reservations/{reservation}/confirm', [\App\Http\Controllers\AdminReservationController::class, 'confirm'])->name('reservations.confirm');

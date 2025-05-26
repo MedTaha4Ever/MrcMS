@@ -32,13 +32,11 @@ class UpdateCarRequest extends FormRequest
                 'string',
                 'max:255',
                 Rule::unique('cars', 'mat')->ignore($carId),
-            ],
-            'modele_id' => 'required|integer|exists:modeles,id',
+            ],            'modele_id' => 'required|integer|exists:modeles,id',
             'dpc' => 'required|date',
-            'contract_id' => 'nullable|integer|exists:contracts,id', // Assuming 0 is not a valid contract id
+            'contract_id' => 'nullable|integer|exists:contracts,id',
             'km' => 'required|integer|min:0',
-            // Include 'id' if it's part of the form data and needs validation, though typically it's from the route
-            // 'id' => 'required|integer|exists:cars,id', 
+            'price_per_day' => 'required|numeric|min:0',
         ];
     }
 }

@@ -51,15 +51,23 @@
                             <option value="">Sélectionnez d'abord une marque</option>
                         @endif
                     </select><br><br>
-                    {{-- Removed commented out input: <input type="text" class="form-control" name="model" id="model" required><br><br> --}}
-
-                    <label for="date_cir">Date de premier circulation</label><br>
+                    {{-- Removed commented out input: <input type="text" class="form-control" name="model" id="model" required><br><br> --}}                    <label for="date_cir">Date de premier circulation</label><br>
                     <input type="date" class="form-control" name="dpc" id="date_cir"
-                        value="{{ old('dpc', $car->dpc) }}" required><br><br>
+                        value="{{ old('dpc', $car->dpc ? $car->dpc->format('Y-m-d') : '') }}" required><br><br>
 
                     <label for="km">Kilometrage</label><br>
                     <input type="number" class="form-control" name="km" id="km"
                         value="{{ old('km', $car->km) }}" required><br><br>
+
+                    <div class="form-group">
+                        <label for="price_per_day">Prix par jour (DT)*</label>
+                        <input type="number" class="form-control @error('price_per_day') is-invalid @enderror" 
+                               id="price_per_day" name="price_per_day" step="0.01" min="0" 
+                               value="{{ old('price_per_day', $car->price_per_day) }}" required>
+                        @error('price_per_day')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
                     <button type="submit" class="btn btn-primary">Modifier</button>
                     <a type="button" href="{{ url()->previous() }}" class="btn btn-secondary">Retour</a>

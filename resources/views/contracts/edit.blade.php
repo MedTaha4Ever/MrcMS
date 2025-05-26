@@ -5,17 +5,19 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">{{ __('messages.new_contract') }}</h3>
-                    <div class="card-tools">
-                        <a href="{{ route('admin.contracts.index') }}" class="btn btn-secondary">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">{{ __('messages.edit_contract') }}</h3>
+                    <div>
+                        <a href="{{ route('admin.contracts.show', $reservation) }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> {{ __('messages.back') }}
                         </a>
                     </div>
                 </div>
                 
-                <form action="{{ route('admin.contracts.store') }}" method="POST">
+                <form action="{{ route('admin.contracts.update', $reservation) }}" method="POST">
                     @csrf
+                    @method('PUT')
+                    
                     <div class="card-body">
                         @if ($errors->any())
                             <div class="alert alert-danger">
@@ -35,8 +37,8 @@
                                     <select name="client_id" id="client_id" class="form-control @error('client_id') is-invalid @enderror" required>
                                         <option value="">Sélectionner un client</option>
                                         @foreach($clients as $client)
-                                            <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>
-                                                {{ $client->full_name }} - {{ $client->email }}
+                                            <option value="{{ $client->id }}" {{ old('client_id', $reservation->client_id) == $client->id ? 'selected' : '' }}>
+                                                {{ $client->f_name }} {{ $client->l_name }} - {{ $client->email }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -55,8 +57,8 @@
                                         @foreach($cars as $car)
                                             <option value="{{ $car->id }}" 
                                                     data-price="{{ $car->price_per_day }}"
-                                                    {{ old('car_id') == $car->id ? 'selected' : '' }}>
-                                                {{ $car->brand }} {{ $car->model }} ({{ $car->year }}) - {{ $car->price_per_day }} DT/jour
+                                                    {{ old('car_id', $reservation->car_id) == $car->id ? 'selected' : '' }}>
+                                                {{ $car->modele->marque->name }} {{ $car->modele->name }} ({{ $car->mat }}) - {{ $car->price_per_day }} DT/jour
                                             </option>
                                         @endforeach
                                     </select>
@@ -74,8 +76,7 @@
                                     <label for="start_date">{{ __('messages.start_date') }} *</label>
                                     <input type="date" name="start_date" id="start_date" 
                                            class="form-control @error('start_date') is-invalid @enderror"
-                                           value="{{ old('start_date', date('Y-m-d')) }}" 
-                                           min="{{ date('Y-m-d') }}" required>
+                                           value="{{ old('start_date', $reservation->start_date) }}" required>
                                     @error('start_date')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -88,8 +89,7 @@
                                     <label for="end_date">{{ __('messages.end_date') }} *</label>
                                     <input type="date" name="end_date" id="end_date" 
                                            class="form-control @error('end_date') is-invalid @enderror"
-                                           value="{{ old('end_date') }}" 
-                                           min="{{ date('Y-m-d', strtotime('+1 day')) }}" required>
+                                           value="{{ old('end_date', $reservation->end_date) }}" required>
                                     @error('end_date')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -97,8 +97,26 @@
                             </div>
                         </div>
 
+                        <!-- Status -->
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="status">{{ __('messages.status') }} *</label>
+                                    <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required>
+                                        <option value="pending" {{ old('status', $reservation->status) == 'pending' ? 'selected' : '' }}>{{ __('messages.pending') }}</option>
+                                        <option value="confirmed" {{ old('status', $reservation->status) == 'confirmed' ? 'selected' : '' }}>{{ __('messages.confirmed') }}</option>
+                                        <option value="cancelled" {{ old('status', $reservation->status) == 'cancelled' ? 'selected' : '' }}>{{ __('messages.cancelled') }}</option>
+                                        <option value="completed" {{ old('status', $reservation->status) == 'completed' ? 'selected' : '' }}>{{ __('messages.completed') }}</option>
+                                    </select>
+                                    @error('status')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Price Calculation Display -->
-                        <div class="row">
+                        <div class="row mt-3">
                             <div class="col-12">
                                 <div class="card bg-light">
                                     <div class="card-body">
@@ -129,7 +147,8 @@
                     <div class="card-footer">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save"></i> {{ __('messages.save') }}
-                        </button>                        <a href="{{ route('admin.contracts.index') }}" class="btn btn-secondary">
+                        </button>
+                        <a href="{{ route('admin.contracts.index') }}" class="btn btn-secondary">
                             <i class="fas fa-times"></i> {{ __('messages.cancel') }}
                         </a>
                     </div>
@@ -139,6 +158,9 @@
     </div>
 </div>
 
+@endsection
+
+@push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const carSelect = document.getElementById('car_id');
@@ -174,28 +196,24 @@ document.addEventListener('DOMContentLoaded', function() {
             totalPriceSpan.textContent = '0';
             availabilityStatus.innerHTML = '';
         }
-    }    function checkAvailability() {
+    }
+
+    function checkAvailability() {
         if (!carSelect.value || !startDateInput.value || !endDateInput.value) {
-            return;
-        }        availabilityStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
-        
-        const metaToken = document.querySelector('meta[name="csrf-token"]');
-        if (!metaToken) {
-            console.error('CSRF token not found');
-            availabilityStatus.innerHTML = '<span class="text-danger"><i class="fas fa-exclamation-triangle"></i> Erreur: Token CSRF manquant</span>';
             return;
         }
 
-        fetch('{{ route("admin.api.check.availability") }}', {
+        availabilityStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';        fetch('{{ route("admin.api.check.availability") }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': metaToken.getAttribute('content')
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             },
             body: JSON.stringify({
                 car_id: carSelect.value,
                 start_date: startDateInput.value,
-                end_date: endDateInput.value
+                end_date: endDateInput.value,
+                reservation_id: '{{ $reservation->id }}' // Include current reservation ID to exclude it from availability check
             })
         })
         .then(response => response.json())
@@ -208,23 +226,16 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             availabilityStatus.innerHTML = '<span class="text-warning"><i class="fas fa-exclamation-triangle"></i> Erreur de vérification</span>';
+            console.error('Error:', error);
         });
     }
 
     carSelect.addEventListener('change', updateCalculations);
-    startDateInput.addEventListener('change', function() {
-        // Update minimum end date
-        const startDate = new Date(this.value);
-        const nextDay = new Date(startDate);
-        nextDay.setDate(startDate.getDate() + 1);
-        endDateInput.min = nextDay.toISOString().split('T')[0];
-        
-        updateCalculations();
-    });
+    startDateInput.addEventListener('change', updateCalculations);
     endDateInput.addEventListener('change', updateCalculations);
 
     // Initial calculation
     updateCalculations();
 });
 </script>
-@endsection
+@endpush

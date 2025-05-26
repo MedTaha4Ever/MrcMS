@@ -3,11 +3,11 @@
 
 <head>
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('web/favicon32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('web/favicon16.png') }}">
-    <meta charset="utf-8">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('web/favicon16.png') }}">    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>MrcMS - @yield('title')</title>
 

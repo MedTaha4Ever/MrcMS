@@ -21,12 +21,12 @@ class StoreCarRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'mat' => 'required|string|max:255|unique:cars,mat',
+        return [            'mat' => 'required|string|max:255|unique:cars,mat',
             'modele_id' => 'required|integer|exists:modeles,id',
             'dpc' => 'required|date',
-            'contract_id' => 'nullable|integer|exists:contracts,id', // Assuming 0 is not a valid contract id, and it should be nullable if no contract
+            'contract_id' => 'nullable|integer|exists:contracts,id',
             'km' => 'required|integer|min:0',
+            'price_per_day' => 'required|numeric|min:0',
         ];
     }
 }

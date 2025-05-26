@@ -8,6 +8,8 @@ use App\Models\Reservation;
 use App\Mail\ReservationConfirmation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class ContractController extends Controller
@@ -56,8 +58,15 @@ class ContractController extends Controller
      * Show the form for creating a new contract/reservation
      */
     public function create()
-    {
-        $cars = Car::where('status', 'available')->with(['modele.marque'])->get();
+    {        $cars = Car::where(function($query) {
+                $query->where('status', 'available')
+                    ->orWhere('status', 'rented'); // Include rented cars too
+            })
+            ->with(['modele.marque', 'reservations' => function($query) {
+                $query->whereIn('status', ['pending', 'confirmed', 'active']);
+            }])
+            ->get();
+        
         $clients = Client::where('status', 'active')->get();
         
         return view('contracts.create', compact('cars', 'clients'));
@@ -81,10 +90,9 @@ class ContractController extends Controller
             'end_date.required' => 'La date de fin est obligatoire.',
             'end_date.after' => 'La date de fin doit être après la date de début.',
         ]);
-        
-        // Check car availability
+          // Check car availability
         $car = Car::findOrFail($request->car_id);
-        if (!$car->isAvailableForPeriod($request->start_date, $request->end_date)) {
+        if (!$car->isAvailableForDates($request->start_date, $request->end_date)) {
             return back()->withErrors(['car_id' => 'Ce véhicule n\'est pas disponible pour la période sélectionnée.']);
         }
         
@@ -116,7 +124,7 @@ class ContractController extends Controller
             \Log::error('Failed to send confirmation email: ' . $e->getMessage());
         }
         
-        return redirect()->route('contracts.show', $reservation)
+        return redirect()->route('admin.contracts.show', $reservation)
                         ->with('success', 'Contrat créé avec succès. Email de confirmation envoyé.');
     }
     
@@ -154,11 +162,10 @@ class ContractController extends Controller
             'end_date' => 'required|date|after:start_date',
             'status' => 'required|in:pending,confirmed,cancelled,completed',
         ]);
-        
-        // If car is changed, check availability
+          // If car is changed, check availability
         if ($request->car_id != $reservation->car_id) {
             $car = Car::findOrFail($request->car_id);
-            if (!$car->isAvailableForPeriod($request->start_date, $request->end_date, $reservation->id)) {
+            if (!$car->isAvailableForDates($request->start_date, $request->end_date)) {
                 return back()->withErrors(['car_id' => 'Ce véhicule n\'est pas disponible pour la période sélectionnée.']);
             }
             
@@ -186,21 +193,52 @@ class ContractController extends Controller
             'status' => $request->status,
         ]);
         
-        return redirect()->route('contracts.show', $reservation)
+        return redirect()->route('admin.contracts.show', $reservation)
                         ->with('success', 'Contrat mis à jour avec succès.');
     }
-    
-    /**
+      /**
      * Remove the specified contract/reservation
-     */
-    public function destroy(Reservation $reservation)
+     */    public function destroy(Reservation $reservation)
     {
-        // Update car status to available
-        $reservation->car->update(['status' => 'available']);
-        
-        $reservation->delete();
-        
-        return redirect()->route('contracts.index')
-                        ->with('success', 'Contrat supprimé avec succès.');
+        try {
+            \Log::info('Starting deletion of reservation: ' . $reservation->id);
+            
+            // Make sure we have an actual reservation
+            if (!$reservation || !$reservation->exists) {
+                throw new \Exception('Reservation not found: ' . $reservation->id);
+            }
+
+            \DB::beginTransaction();
+            
+            // Ensure car relationship is loaded and exists
+            $reservation->load('car');
+            
+            if ($reservation->car) {
+                \Log::info('Updating car status for car: ' . $reservation->car->id);
+                // Update car status to available
+                $reservation->car->update(['status' => 'available']);
+            }
+            
+            // Delete the reservation
+            $deleted = $reservation->delete();
+            
+            if (!$deleted) {
+                throw new \Exception('Failed to delete reservation');
+            }
+            
+            \DB::commit();
+            \Log::info('Successfully deleted reservation: ' . $reservation->id);
+            
+            return redirect()->route('admin.contracts.index')
+                            ->with('success', 'Contrat supprimé avec succès.');
+                            
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            \Log::error('Error deleting contract: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            
+            return redirect()->route('admin.contracts.index')
+                            ->with('error', 'Une erreur est survenue lors de la suppression du contrat: ' . $e->getMessage());
+        }
     }
 }

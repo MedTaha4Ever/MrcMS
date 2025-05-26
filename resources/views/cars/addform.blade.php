@@ -37,13 +37,36 @@
                     <select class="form-control" name="modele_id" id="modele">
                         <option value="">Sélectionnez d'abord une marque</option>
                     </select><br><br>
-                    {{-- Removed commented out input: <input type="text" class="form-control" name="model" id="model" required><br><br> --}}
+                    {{-- Removed commented out input: <input type="text" class="form-control" name="model" id="model" required><br><br> --}}                    <div class="form-group">
+                        <label for="date_cir">Date de premier circulation</label>
+                        <input type="date" class="form-control @error('dpc') is-invalid @enderror" 
+                               name="dpc" id="date_cir" 
+                               value="{{ old('dpc', date('Y-m-d')) }}" required>
+                        @error('dpc')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-                    <label for="date_cir">Date de premier circulation</label><br>
-                    <input type="date" class="form-control" name="dpc" id="date_cir" required><br><br>
+                    <div class="form-group">
+                        <label for="km">Kilometrage</label>
+                        <input type="number" class="form-control @error('km') is-invalid @enderror" 
+                               name="km" id="km" 
+                               value="{{ old('km', 0) }}" min="0" required>
+                        @error('km')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-                    <label for="km">Kilometrage</label><br>
-                    <input type="number" class="form-control" name="km" id="km" required><br><br>
+                    <div class="form-group">
+                        <label for="price_per_day">Prix par jour (DT)*</label>
+                        <input type="number" class="form-control @error('price_per_day') is-invalid @enderror" 
+                               id="price_per_day" name="price_per_day" 
+                               step="0.01" min="0" 
+                               value="{{ old('price_per_day', 100.00) }}" required>
+                        @error('price_per_day')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
                     <button type="submit" class="btn btn-primary">Ajouter</button>
                 </form>

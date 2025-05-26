@@ -117,14 +117,16 @@
                                             <a href="{{ route('admin.contracts.edit', $reservation) }}" 
                                                class="btn btn-sm btn-warning" title="{{ __('messages.edit') }}">
                                                 <i class="fas fa-edit"></i>
-                                            </a>
-                                            <form action="{{ route('admin.contracts.destroy', $reservation) }}" 
-                                                  method="POST" style="display: inline-block;"
-                                                  onsubmit="return confirm('{{ __('messages.confirm_delete') }}')">
+                                            </a>                                            <form action="{{ route('admin.contracts.destroy', $reservation) }}" 
+                                                  method="POST" 
+                                                  class="delete-contract-form" 
+                                                  style="display: inline-block;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" 
-                                                        title="{{ __('messages.delete') }}">
+                                                <button type="submit" 
+                                                        class="btn btn-sm btn-danger delete-contract" 
+                                                        title="{{ __('messages.delete') }}"
+                                                        data-id="{{ $reservation->id }}">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -149,4 +151,26 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+@parent
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteForms = document.querySelectorAll('.delete-contract-form');
+    
+    deleteForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const contractId = this.querySelector('.delete-contract').dataset.id;
+            
+            if (confirm('{{ __("messages.confirm_delete") }}')) {
+                // Proceed with form submission
+                this.submit();
+            }
+        });
+    });
+});
+</script>
 @endsection

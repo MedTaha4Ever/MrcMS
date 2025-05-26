@@ -13,16 +13,20 @@ class CreateClientsTable extends Migration
      */
     public function up()
     {
-        Schema::create('clients', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('f_name')->nullable();
-            $table->string('lname')->nullable();
-            $table->string('cin', 45)->nullable();
-            $table->bigInteger('permis')->nullable();
-            $table->date('date_permis')->nullable();
-            $table->date('b_date')->nullable();
+        Schema::create('clients', function (Blueprint $table) {            $table->bigIncrements('id');
+            $table->string('f_name');
+            $table->string('l_name');
+            $table->string('email')->unique()->nullable();
+            $table->string('phone', 20)->nullable();
+            $table->string('cin', 45)->unique();
+            $table->string('permis', 50)->unique();
+            $table->date('date_permis');
+            $table->date('b_date');
             $table->string('adrs')->nullable();
-            $table->string('notes')->nullable();
+            $table->string('notes', 1000)->nullable();
+            $table->enum('status', ['active', 'inactive', 'suspended'])->default('active');
+            $table->bigInteger('contract_id')->default(0);
+            $table->timestamps();
         });
     }
 

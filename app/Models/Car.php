@@ -10,9 +10,7 @@ use Carbon\Carbon;
 
 class Car extends Model
 {
-    use HasFactory;
-
-    protected $fillable = [
+    use HasFactory;    protected $fillable = [
         'mat',
         'modele_id',
         'dpc',
@@ -21,6 +19,10 @@ class Car extends Model
         'price_per_day',
         'status',
         'image_url'
+    ];
+
+    protected $attributes = [
+        'price_per_day' => 100.00 // Default price per day
     ];
 
     protected $casts = [
@@ -87,6 +89,14 @@ class Car extends Model
                 $query->where('start_date', '<', $endDate)
                       ->where('end_date', '>', $startDate);
             })->exists();
+    }
+
+    /**
+     * Alias for isAvailableForDates for consistency.
+     */
+    public function isAvailableForPeriod(string $startDate, string $endDate): bool
+    {
+        return $this->isAvailableForDates($startDate, $endDate);
     }
 
     /**
