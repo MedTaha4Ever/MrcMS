@@ -293,3 +293,4 @@ If you encounter any issues or have questions:
 ## License
 
 This project is built on the Laravel framework, which is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+By [Taha for Multimedia Productions](https://tahaprod.tn)
